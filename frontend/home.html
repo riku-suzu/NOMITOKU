@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ノミトク - 今のお得を探す</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2 id="welcome"></h2>
+        <div class="search-options">
+            <a href="nearby.html" class="button12">近くの「今のお得」を探す</a>
+            <a href="#" class="button12">行きたい場所の「今のお得」を探す</a>
+            
+            
+
+        </div>
+        <p></p>
+        <p></p>
+        <a href="index.html" class="button13">戻る</a>
+    </div>
+
+    <script>
+        getMeApi().then((data) => {
+        console.log("data:", data);
+        const welcomeH1 = document.getElementById("welcome");
+        welcomeH1.innerText = `こんにちは、${data.nickname}さん`;
+      });
+    </script>
+</body>
+</html>

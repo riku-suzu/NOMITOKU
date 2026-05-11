@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ノミトク - 近くの店舗と今のお得</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="/js/api.js"></script>
+    
+  </head>
+  <body>
+    <div class="container">
+      <h1>近くの店舗と今のお得</h1>
+
+      <div class="section">
+        <h2 id="welcome"></h2>
+
+        <div class="store-item">
+          <div id="favorite-store-list"></div>
+        </div>
+
+        <button onclick="logout()" class="button13">ログアウト</button>
+
+        <div class="section">
+          <h2>近くの今のお得</h2>
+          <div class="store-item">
+            <div id="store-list"><!-- ここにお店が入る --></div>
+          </div>
+        </div>
+      </div>
+      <a href="home.html" class="button13">戻る</a>
+    </div>
+
+    <script>
+      // 全店舗を取得し、お気に入り以外を表示
+      getAllStoresApi().then((data) => {
+        getUserFavoriteStoreIdsAPI().then((favoriteResponse) => {
+          const storeList = document.getElementById("store-list");
+
+          const filteredData = data.filter(
+            (store) => !favoriteResponse.favorite.includes(store.store_id)
+          );
+
+          filteredData.sort((a, b) => {
+            return parseFloat(a.distance) - parseFloat(b.distance);
+          });
+
+          filteredData.forEach((store) => {
+            const storeDiv = document.createElement("div");
+            storeDiv.classList.add("container", "store-card");
+
+            // クリックで詳細ページへ遷移
+            storeDiv.onclick = () => {
+              window.location.href = `/shop_detail.html?storeId=${store.store_id}`;
+            };
+
+            storeDiv.innerHTML = `
+              <h3>${store.store_name}</h3>
+              <p>距離: ${store.distance}</p>
+              <p>本日のお得: ${store.coupon}</p>
+              <p>備考: ${store.note}</p>
+            `;
+            storeList.appendChild(storeDiv);
+          });
+        });
+      });
+
+      // お気に入り店舗のみ表示
+      getAllStoresApi().then((data) => {
+        getUserFavoriteStoreIdsAPI().then((favoriteResponse) => {
+          const favStoreList = document.getElementById("favorite-store-list");
+
+          const filteredData = data.filter((store) =>
+            favoriteResponse.favorite.includes(store.store_id)
+          );
+
+          filteredData.sort((a, b) => {
+            return parseFloat(a.distance) - parseFloat(b.distance);
+          });
+
+          filteredData.forEach((store) => {
+            const storeDiv = document.createElement("div");
+            storeDiv.classList.add("container", "store-card");
+
+            storeDiv.onclick = () => {
+              window.location.href = `/shop_detail.html?storeId=${store.store_id}`;
+            };
+
+            storeDiv.innerHTML = `
+              <h3>${store.store_name}</h3>
+              <p>距離: ${store.distance}</p>
+              <p>本日のお得: ${store.coupon}</p>
+              <p>備考: ${store.note}</p>
+            `;
+            favStoreList.appendChild(storeDiv);
+          });
+        });
+      });
+
+      // ログインユーザーのニックネーム表示
+      getMeApi().then((data) => {
+        const welcomeH1 = document.getElementById("welcome");
+        welcomeH1.innerText = `${data.nickname}さんのお気に入り店舗`;
+      });
+    </script>
+  </body>
+</html>

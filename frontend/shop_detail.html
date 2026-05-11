@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お店の詳細</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>お店の詳細</h2>
+            <button onclick="update_favorite_stores()"  class="button14" id="favorite-button">お気に入り</button>
+        
+        <div class="section">
+            <div id="store-list">
+                <!-- ここに見たいお店が入る -->
+            </div>
+        </div>
+        <p></p>
+        <!-- <div class="back-button-container"> -->
+            <a href="nearby.html" class="button13">一覧に戻る</a>
+        <!-- </div> -->
+    </div>
+
+<script>
+  // URLからstoreIdを取得
+  const params = new URLSearchParams(window.location.search);
+  const storeId = params.get('storeId');
+  console.log("storeId:", storeId); // 追加
+
+  // getUserFavoriteStoreIdsAPI()
+  //   .then((data) => {
+  //     console.log(data)
+  //   })
+
+  // 全店舗取得APIから該当店舗だけ表示
+  getStoreDetailApi(storeId)
+    .then((data) => {
+      console.log("APIから取得したデータ:", data); // 追加
+      const storeList = document.getElementById('store-list');
+      // storeIdが一致する店舗を探す
+      store = data
+      console.log("見つかった店舗:", store); // 追加
+      if (store) {
+        storeList.innerHTML = `
+          <div class="container">
+            <h1>${store.store_name}</h1>
+            <p>距離: ${store.distance}</p>
+            <p>本日のお得: ${store.coupon}</p>
+            <p>備考: ${store.note}</p>
+            <p>電話番号: ${store.phonenumber}</p>
+            <p>場所:</p>
+            <div>
+              <iframe src="${store.map_url}" width="750" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        `;
+      } else {
+        storeList.innerHTML = "<p>店舗情報が見つかりませんでした。</p>";
+      }
+    });
+
+  // お気に入りボタンの状態を更新する関数
+  const updateButtonState = () => {
+    getUserFavoriteStoreIdsAPI()
+      .then((data) => {
+        const updateButton = document.getElementById("favorite-button");
+        let favoriteDataJson = Array.isArray(data.favorite) ? data.favorite : JSON.parse(data.favorite);
+        if (favoriteDataJson.includes(Number(storeId))) {
+          updateButton.innerText = `お気に入り済み`;
+          updateButton.classList.add("favorite-checked");
+        } else {
+          updateButton.innerText = `お気に入り`;
+          updateButton.classList.remove("favorite-checked");
+        }
+      });
+  };
+  updateButtonState();
+
+  // お気に入りの追加・削除処理（リロードしない）
+  const update_favorite_stores = () => {
+    getUserFavoriteStoreIdsAPI()
+      .then((data) => {
+        let favoriteDataJson = JSON.parse(data.favorite);
+        const id = Number(storeId);
+
+        if (favoriteDataJson.includes(id)) {
+          // 削除
+          favoriteDataJson = favoriteDataJson.filter((x) => x !== id);
+        } else {
+          // 追加
+          favoriteDataJson.push(id);
+        }
+
+        updateFavoriteStoresAPI(favoriteDataJson).then(() => {
+          // リロードせずボタン状態だけ更新
+          updateButtonState();
+        });
+      });
+  };
+  // update_favorite_stores()
+</script>
+</body>
+</html>
