@@ -43,6 +43,9 @@ COPY pyproject.toml poetry.lock ./
 # poetryでライブラリをインストール
 RUN poetry install --no-root
 
+# アプリのコードをコピー
+COPY api/ ./api/
+
 EXPOSE 8000
 
 CMD ["sh", "-c", "poetry run uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
