@@ -3,7 +3,7 @@
 # python3.11のイメージをダウンロード
 FROM python:3.11-slim-bookworm
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl libpq-dev gcc
 
 ENV PYTHONUNBUFFERED=1 \
     # pip
