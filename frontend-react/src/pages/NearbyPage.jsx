@@ -32,9 +32,10 @@ function NearbyPage() {
     fetch(`${API_HOST}/me/favoritestores`, { headers })
       .then((res) => res.json())
       .then((data) => {
-        // dataは {favorite: [1,2,3]} または [1,2,3] の形で返ってくる
-        const ids = data.favorite ?? data
-        setFavoriteIds(Array.isArray(ids) ? ids : [])
+        // favoriteはDB上でJSON文字列なのでパースが必要
+        const raw = data.favorite ?? data
+        const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
+        setFavoriteIds(ids)
       })
   }, [])
 

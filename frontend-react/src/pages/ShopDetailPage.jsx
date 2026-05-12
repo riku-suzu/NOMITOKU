@@ -29,8 +29,8 @@ function ShopDetailPage() {
     fetch(`${API_HOST}/me/favoritestores`, { headers })
       .then((res) => res.json())
       .then((data) => {
-        const ids = data.favorite ?? data
-        const idList = Array.isArray(ids) ? ids : []
+        const raw = data.favorite ?? data
+        const idList = Array.isArray(raw) ? raw : JSON.parse(raw)
         setIsFavorite(idList.includes(Number(storeId)))
       })
   }, [storeId])
@@ -48,8 +48,8 @@ function ShopDetailPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const ids = data.favorite ?? data
-        let idList = Array.isArray(ids) ? [...ids] : []
+        const raw = data.favorite ?? data
+        let idList = Array.isArray(raw) ? [...raw] : JSON.parse(raw)
 
         if (isFavorite) {
           idList = idList.filter((id) => id !== Number(storeId))
