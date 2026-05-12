@@ -1,0 +1,338 @@
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
+  color: #333;
+  height:110%;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.container {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+
+
+h1,
+h2,
+h3 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.buttons,
+.search-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.button {
+  display: block;
+  width: 96%;
+  padding: 15px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+.buttonB {
+  display: block;
+  width: 95%;
+  padding: 15px;
+  background-color: #607184;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+.buttonB:hover {
+  background-color: #738eab;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: calc(100% - 22px); /* Adjust for padding and border */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.section {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.store-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+
+.store-item {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* .store-item:hover {
+  background-color: #e9e9e9;
+} */
+
+.store-item h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: left;
+  color: #007bff;
+}
+
+.store-item p {
+  margin: 5px 0;
+  font-size: 0.95em;
+}
+
+.store-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 8px;
+}
+
+.details-section {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #eee;
+}
+
+.details-section h2 {
+  text-align: left;
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 1.2em;
+}
+
+.details-section p {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.icon {
+  vertical-align: middle;
+  margin-right: 5px;
+  width: 24px; /* Adjust size as needed */
+  height: 24px; /* Adjust size as needed */
+}
+
+.favorite-button {
+  background-color: rgb(224, 22, 224);
+  color: #333;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.favorite-button:hover {
+  background-color: #feb6ff;
+}
+
+.button12 {
+  text-align: center;
+  background-color: #fff;
+  border: solid 2px #1c8fb9;
+  color: #000000;
+  border-radius: 20px;
+  padding: 10px 30px;
+  text-decoration: none;
+  font-size: 1em;
+  box-shadow: 0 5px 0 #14647f;
+  display: inline-block;
+  transition: .3s;
+  font-size: larger;
+}
+.button12:hover {
+  color: #8989de;
+  transform: translateY(5px);
+  box-shadow: 0 0 0 #191970;
+}
+
+
+.button13 {
+  /* 中央配置と横幅の調整 */
+  display: block;            /* 要素をブロックレベル要素に変更 */
+  width: fit-content;        /* コンテンツの幅に合わせて要素の幅を決定 */
+  margin: 10px auto;         /* 上下に10px、左右に自動マージンを適用して中央配置 */
+  padding: 10px 20px;        /* 左右のパディングを小さくして横幅を調整 */
+
+  /* 以下は元のスタイル */
+  text-align: center;
+  background-color: #fff;
+  border: solid 2px #1c8fb9;
+  color: #000000;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 1em;
+  box-shadow: 0 5px 0 #14647f;
+  transition: .3s;
+  font-size: larger;
+}
+
+.button13:hover {
+  color: #8989de;
+  transform: translateY(5px);
+  box-shadow: 0 0 0 #191970;
+}
+
+.button14 {
+  /* 中央配置と横幅の調整 (右寄せに変更) */
+  display: block;
+  width: fit-content;
+  margin: 10px 0 10px auto; /* 上下に10px、左に0、右にautoマージンを適用して右寄せ */
+  padding: 10px 20px;
+
+  /* 以下は元のスタイル */
+  text-align: center;
+  background-color: #fa6be5f6;
+  border: solid 2px #bf3eff;
+  color: #000000;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 1em;
+  box-shadow: 0 5px 0 #680f79;
+  transition: .3s;
+  font-size: larger;
+}
+
+.button14:hover {
+  color: #8989de;
+  transform: translateY(5px);
+  box-shadow: 0 0 0 #191970;
+}
+
+.favorite-checked {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: default;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 0px;
+  padding: 0px;
+  background-color: #ffffff;
+  border-radius: 0px;
+margin: auto;
+}
+
+.login-container label {
+
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #444;
+}
+
+.login-container input#nickname,
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+
+.login-container h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.login-container h2 {
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+#megs {
+  margin-bottom: 15px;
+  color: red;
+  font-weight: bold;
+}
+
+/* まず .container:hover のbox-shadowやtransformを消す（または不要なら削除） */
+
+/* 各お店カードだけホバーで浮き上がる */
+.store-card {
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.store-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,0,0,0.15);
+  transform: translateY(-8px) scale(1.03);
+  z-index: 2;
+  background-color: #fff; /* 必要なら背景色も指定 */
+}
