@@ -1,113 +1,125 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useDir } from '../context/DirectionCtx'
+import { pageVariants, pageTransition } from '../utils/motion'
 
-const API_HOST = 'http://localhost:8000'
+const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
+
+let storeCache = null
+let favCache = null
+
+function StoreCard({ store, onNavigate }) {
+  return (
+    <div className="store-card" onClick={onNavigate}>
+      <div className="store-card-header">
+        <span className="store-card-name">{store.store_name}</span>
+        <span className="store-card-dist">📍 {store.distance}</span>
+      </div>
+      <div className="store-deal">{store.coupon}</div>
+      {store.note && <p className="store-card-note">{store.note}</p>}
+    </div>
+  )
+}
 
 function NearbyPage() {
-  const [nickname, setNickname] = useState('')
-  const [stores, setStores] = useState([])         // 全店舗リスト
-  const [favoriteIds, setFavoriteIds] = useState([]) // お気に入り店舗IDのリスト
+  const [stores, setStores] = useState(storeCache || [])
+  const [favoriteIds, setFavoriteIds] = useState(favCache || [])
+  const [geoError, setGeoError] = useState(null)
+  const [loading, setLoading] = useState(!storeCache)
   const navigate = useNavigate()
+  const { dir } = useDir()
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
+    if (!token) { navigate('/'); return }
 
     const headers = { Authorization: `Bearer ${token}` }
 
-    // ① ユーザー情報を取得
     fetch(`${API_HOST}/me`, { headers })
-      .then((res) => res.json())
-      .then((data) => setNickname(data.nickname))
+      .then((r) => r.json())
+      .then((d) => localStorage.setItem('nickname', d.nickname))
 
-    // ② 全店舗を取得
-    fetch(`${API_HOST}/stores`, { headers })
-      .then((res) => res.json())
-      .then((data) => setStores(data))
-
-    // ③ お気に入り店舗IDを取得
     fetch(`${API_HOST}/me/favoritestores`, { headers })
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
-        // favoriteはDB上でJSON文字列なのでパースが必要
         const raw = data.favorite ?? data
         const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
+        favCache = ids
         setFavoriteIds(ids)
       })
+
+    if (storeCache) return
+
+    if (!navigator.geolocation) {
+      setGeoError('この端末では位置情報が使えません')
+      setLoading(false)
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords
+        fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`, { headers })
+          .then((r) => r.json())
+          .then((d) => { storeCache = d; setStores(d); setLoading(false) })
+          .catch(() => { setGeoError('お店情報の取得に失敗しました'); setLoading(false) })
+      },
+      () => {
+        setGeoError('位置情報の許可が必要です')
+        setLoading(false)
+      },
+      { timeout: 10000 }
+    )
   }, [])
 
-  // 距離順に並び替えるヘルパー関数
-  const sortByDistance = (list) =>
-    [...list].sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-
-  // お気に入りとそれ以外に分ける
-  const favoriteStores = sortByDistance(
-    stores.filter((s) => favoriteIds.includes(s.store_id))
-  )
-  const otherStores = sortByDistance(
-    stores.filter((s) => !favoriteIds.includes(s.store_id))
-  )
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    navigate('/')
-  }
+  const favoriteStores = stores.filter((s) => favoriteIds.includes(s.store_id))
+  const otherStores = stores.filter((s) => !favoriteIds.includes(s.store_id))
 
   return (
-    <div className="container">
-      <h1>近くの店舗と今のお得</h1>
+    <motion.div
+      custom={dir}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
+      <div className="page-content">
+        {favoriteStores.length > 0 && (
+          <>
+            <p className="section-title">★ お気に入り</p>
+            <div className="store-list">
+              {favoriteStores.map((store) => (
+                <StoreCard
+                  key={store.store_id}
+                  store={store}
+                  onNavigate={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
+                />
+              ))}
+            </div>
+            <hr className="divider" />
+          </>
+        )}
 
-      <div className="section">
-        {/* お気に入り店舗 */}
-        <h2>{nickname}さんのお気に入り店舗</h2>
-        <div className="store-item">
-          {favoriteStores.length === 0 ? (
-            <p>お気に入り店舗はありません</p>
-          ) : (
-            favoriteStores.map((store) => (
-              <div
-                key={store.store_id}
-                className="container store-card"
-                onClick={() => navigate(`/shop/${store.store_id}`)}
-                style={{ cursor: 'pointer' }}
-              >
-                <h3>{store.store_name}</h3>
-                <p>距離: {store.distance}</p>
-                <p>本日のお得: {store.coupon}</p>
-                <p>備考: {store.note}</p>
-              </div>
-            ))
-          )}
-        </div>
-
-        <button onClick={handleLogout} className="button13">ログアウト</button>
-
-        {/* 近隣店舗 */}
-        <div className="section">
-          <h2>近くの今のお得</h2>
-          <div className="store-item">
-            {otherStores.map((store) => (
-              <div
-                key={store.store_id}
-                className="container store-card"
-                onClick={() => navigate(`/shop/${store.store_id}`)}
-                style={{ cursor: 'pointer' }}
-              >
-                <h3>{store.store_name}</h3>
-                <p>距離: {store.distance}</p>
-                <p>本日のお得: {store.coupon}</p>
-                <p>備考: {store.note}</p>
-              </div>
-            ))}
+        <p className="section-title">近くの今のお得</p>
+        {loading && <p className="empty-text">現在地を取得中...</p>}
+        {geoError && <p className="empty-text">{geoError}</p>}
+        {!loading && !geoError && (
+          <div className="store-list">
+            {otherStores.length === 0
+              ? <p className="empty-text">近くに該当するお店が見つかりませんでした</p>
+              : otherStores.map((store) => (
+                <StoreCard
+                  key={store.store_id}
+                  store={store}
+                  onNavigate={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
+                />
+              ))}
           </div>
-        </div>
+        )}
       </div>
-
-      <Link to="/home" className="button13">戻る</Link>
-    </div>
+    </motion.div>
   )
 }
 

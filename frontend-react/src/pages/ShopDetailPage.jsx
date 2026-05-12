@@ -1,104 +1,119 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useDir } from '../context/DirectionCtx'
+import { pageVariants, pageTransition } from '../utils/motion'
 
-const API_HOST = 'http://localhost:8000'
+const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
 
 function ShopDetailPage() {
-  const [store, setStore] = useState(null)
+  const location = useLocation()
+  const [store, setStore] = useState(location.state?.store || null)
   const [isFavorite, setIsFavorite] = useState(false)
   const navigate = useNavigate()
-
-  // URLの /shop/:storeId から storeId を取り出す
   const { storeId } = useParams()
+  const { dir, setDir } = useDir()
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) {
-      navigate('/login')
-      return
-    }
+    if (!token) { navigate('/'); return }
 
     const headers = { Authorization: `Bearer ${token}` }
 
-    // ① 店舗詳細を取得
-    fetch(`${API_HOST}/store/${storeId}`, { headers })
-      .then((res) => res.json())
-      .then((data) => setStore(data))
+    // navigation state に store がなければ DB から取得（直接URL アクセス時）
+    if (!location.state?.store) {
+      fetch(`${API_HOST}/store/${storeId}`, { headers }).then((r) => r.json()).then((d) => setStore(d))
+    }
 
-    // ② お気に入り状態を確認
     fetch(`${API_HOST}/me/favoritestores`, { headers })
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
         const raw = data.favorite ?? data
-        const idList = Array.isArray(raw) ? raw : JSON.parse(raw)
-        setIsFavorite(idList.includes(Number(storeId)))
+        const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
+        setIsFavorite(ids.includes(Number(storeId)))
       })
   }, [storeId])
 
-  // お気に入りの追加・削除
   const handleToggleFavorite = () => {
     const token = localStorage.getItem('token')
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    }
-
-    fetch(`${API_HOST}/me/favoritestores`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    fetch(`${API_HOST}/me/favoritestores`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
       .then((data) => {
         const raw = data.favorite ?? data
-        let idList = Array.isArray(raw) ? [...raw] : JSON.parse(raw)
-
-        if (isFavorite) {
-          idList = idList.filter((id) => id !== Number(storeId))
-        } else {
-          idList.push(Number(storeId))
-        }
-
-        return fetch(`${API_HOST}/update_favorite`, {
-          method: 'PUT',
-          headers,
-          body: JSON.stringify(idList),
-        })
+        let ids = Array.isArray(raw) ? [...raw] : JSON.parse(raw)
+        ids = isFavorite ? ids.filter((id) => id !== Number(storeId)) : [...ids, Number(storeId)]
+        return fetch(`${API_HOST}/update_favorite`, { method: 'PUT', headers, body: JSON.stringify(ids) })
       })
       .then(() => setIsFavorite(!isFavorite))
   }
 
-  // 店舗情報がまだ取得できていない間はローディング表示
-  if (!store) return <p>読み込み中...</p>
+  if (!store) return <p style={{ textAlign: 'center', padding: '48px', color: '#ccc' }}>読み込み中...</p>
 
   return (
-    <div className="container">
-      <h2>お店の詳細</h2>
+    <motion.div
+      custom={dir}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
+      <div className="page-content">
+        <div className="detail-card">
+          <div className="detail-top">
+            <div className="detail-top-left">
+              <h2 className="detail-name">{store.store_name}</h2>
+              <p className="detail-dist">📍 {store.distance}</p>
+            </div>
+            <button
+              onClick={handleToggleFavorite}
+              className={`btn-fav${isFavorite ? ' btn-fav--on' : ''}`}
+            >
+              {isFavorite ? '♥' : '♡'}
+            </button>
+          </div>
 
-      <button onClick={handleToggleFavorite} className="button14">
-        {isFavorite ? 'お気に入り済み' : 'お気に入り'}
-      </button>
+          <hr className="detail-rule" />
 
-      <div className="section">
-        <div className="container">
-          <h1>{store.store_name}</h1>
-          <p>距離: {store.distance}</p>
-          <p>本日のお得: {store.coupon}</p>
-          <p>備考: {store.note}</p>
-          <p>電話番号: {store.phonenumber}</p>
-          <p>場所:</p>
+          <div className="detail-coupon-section">
+            <p className="detail-coupon-label">本日のお得</p>
+            <p className="detail-coupon-text">{store.coupon}</p>
+          </div>
+
+          <hr className="detail-rule" />
+
+          <div className="detail-info">
+            {store.phonenumber && (
+              <div className="detail-info-row">
+                <span className="detail-info-icon">📞</span>
+                <span>{store.phonenumber}</span>
+              </div>
+            )}
+            {store.note && (
+              <div className="detail-info-row">
+                <span className="detail-info-icon">📝</span>
+                <span>{store.note}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {store.map_url && (
           <iframe
             src={store.map_url}
-            width="750"
-            height="350"
-            style={{ border: 0 }}
+            className="detail-map"
             allowFullScreen
             loading="lazy"
+            title="地図"
           />
-        </div>
-      </div>
+        )}
 
-      <br />
-      <Link to="/nearby" className="button13">一覧に戻る</Link>
-    </div>
+        <button onClick={() => { setDir(-1); navigate('/nearby') }} className="btn-secondary">
+          ← 一覧に戻る
+        </button>
+      </div>
+    </motion.div>
   )
 }
 

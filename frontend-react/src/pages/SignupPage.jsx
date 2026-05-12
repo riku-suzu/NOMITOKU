@@ -1,22 +1,22 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useDir } from '../context/DirectionCtx'
+import { pageVariants, pageTransition } from '../utils/motion'
 
-const API_HOST = 'http://localhost:8000'
+const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
 
 function SignupPage() {
   const [nickname, setNickname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
+  const navigate = useNavigate()
+  const { dir, setDir } = useDir()
 
   const handleRegister = () => {
-    if (nickname === '' || email === '' || password === '') {
-      setErrorMsg('全ての項目を入力してください')
-      return
-    }
+    if (!nickname || !email || !password) { setErrorMsg('全ての項目を入力してください'); return }
 
-    // 登録はJSONで送る（ログインとここが違う）
     fetch(`${API_HOST}/user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -27,54 +27,51 @@ function SignupPage() {
         if (res.status === 400) throw new Error('このメールアドレスは既に登録されています')
         throw new Error('登録に失敗しました')
       })
-      .then(() => {
-        setSuccessMsg('登録成功！ログインページへどうぞ')
-        setErrorMsg('')
-      })
-      .catch((error) => {
-        setErrorMsg(error.message)
-      })
+      .then(() =>
+        fetch(`${API_HOST}/token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        })
+      )
+      .then((res) => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
+      .then((data) => { localStorage.setItem('token', data.access_token); navigate('/nearby') })
+      .catch((error) => setErrorMsg(error.message))
   }
 
   return (
-    <div className="container">
-      <h1>ノミトク</h1>
-      <h2>新規登録</h2>
-
-      <div className="login-container">
-        {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-        {successMsg && (
-          <p style={{ color: 'green' }}>
-            {successMsg} <Link to="/login">ログインページへ</Link>
+    <motion.div
+      custom={dir}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
+      <div className="page-content">
+        <div className="login-card">
+          <h2>新規会員登録</h2>
+          {errorMsg && <p className="error-msg">{errorMsg}</p>}
+          <div className="form-group">
+            <label>ニックネーム</label>
+            <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="ニックネーム" />
+          </div>
+          <div className="form-group">
+            <label>メールアドレス</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
+          </div>
+          <div className="form-group">
+            <label>パスワード</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="パスワード" />
+          </div>
+          <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
+          <p className="signup-link">
+            すでにアカウントをお持ちの方は{' '}
+            <button onClick={() => { setDir(-1); navigate('/') }} className="btn-text">ログイン</button>
           </p>
-        )}
-
-        <label>ニックネーム:</label>
-        <input
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-        />
-        <br />
-        <label>メールアドレス:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br />
-        <label>パスワード:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        </div>
       </div>
-
-      <br />
-      <button onClick={handleRegister} className="button13">新規登録</button>
-      <p><Link to="/">トップに戻る</Link></p>
-    </div>
+    </motion.div>
   )
 }
 

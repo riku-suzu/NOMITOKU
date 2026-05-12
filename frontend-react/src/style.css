@@ -1,338 +1,387 @@
 body {
-  font-family: "Arial", sans-serif;
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
-  color: #333;
-  height:110%;
+  background-color: #FDF3E3;
+  color: #2C1810;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* ===== 背景装飾 ===== */
+.bg-deco {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.18;
 }
 
-
-.container {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+.bg-deco-item {
+  position: absolute;
+  user-select: none;
+  line-height: 1;
 }
 
-
-
-h1,
-h2,
-h3 {
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.buttons,
-.search-options {
+/* ===== ヘッダー ===== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #C41E3A;
+  padding: 0 20px;
+  height: 52px;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 30px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-.button {
-  display: block;
-  width: 96%;
-  padding: 15px;
-  background-color: #007bff;
-  color: white;
+.app-header h1 {
+  margin: 0;
+  font-size: 1.4em;
+  letter-spacing: 0.2em;
+  color: #FFE066;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-nickname {
+  font-size: 0.88em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.header-logout {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 0.82em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.header-logout:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ===== ページ共通 ===== */
+.page-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== ログインカード ===== */
+.login-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(196, 30, 58, 0.12);
+  padding: 32px 28px;
+  margin: 24px auto;
+  max-width: 400px;
+}
+
+.login-card h2 {
   text-align: center;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease;
+  color: #C41E3A;
+  font-size: 1.35em;
+  margin: 0 0 24px;
 }
 
-.buttonB {
-  display: block;
-  width: 95%;
-  padding: 15px;
-  background-color: #607184;
-  color: white;
-  text-align: center;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease;
-}
-
-.buttonB:hover {
-  background-color: #738eab;
-}
-
-.button:hover {
-  background-color: #0056b3;
-}
-
+/* ===== フォーム ===== */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   font-weight: bold;
+  color: #5A2D0C;
+  font-size: 0.9em;
 }
 
+.form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
-  width: calc(100% - 22px); /* Adjust for padding and border */
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  width: 100%;
+  padding: 11px 13px;
+  border: 1.5px solid #E0C8A8;
+  border-radius: 7px;
   font-size: 1em;
+  box-sizing: border-box;
+  background: #FFFDF8;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button[type="submit"] {
+.form-group input::placeholder {
+  color: #C8B8A8;
+  opacity: 1;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #C41E3A;
+  box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+}
+
+/* ===== ボタン ===== */
+.btn-primary {
+  display: block;
   width: 100%;
-  padding: 15px;
-  background-color: #28a745;
-  color: white;
+  padding: 13px;
+  background: #C41E3A;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 1.05em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
+}
+
+.btn-primary:hover { background: #A8162F; }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  display: block;
+  width: fit-content;
+  margin: 16px auto;
+  padding: 10px 26px;
+  background: transparent;
+  color: #C41E3A;
+  border: 2px solid #C41E3A;
+  border-radius: 22px;
+  font-size: 0.95em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #C41E3A;
+  color: #fff;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #D4740A;
+  cursor: pointer;
+  font-size: 1em;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.btn-text:hover { color: #C41E3A; }
+
+/* ===== お気に入りボタン ===== */
+.btn-fav {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border-radius: 20px;
   font-size: 1.1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s;
+  background: #FFF0F5;
+  color: #C43070;
+  border: 1.5px solid #F0A0C0;
+  line-height: 1;
 }
 
-button[type="submit"]:hover {
-  background-color: #218838;
+.btn-fav:hover { background: #FFD6E8; }
+
+.btn-fav--on {
+  background: #F06090;
+  color: #fff;
+  border-color: #F06090;
 }
 
-.section {
-  margin-top: 10px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+/* ===== テキスト系 ===== */
+.signup-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.88em;
+  color: #999;
+}
+
+.error-msg {
+  color: #C41E3A;
+  background: #FFF0EF;
+  border: 1px solid #F5BEBE;
+  border-radius: 7px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.92em;
+}
+
+.empty-text {
+  color: #bbb;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 0.9em;
+}
+
+/* ===== 一覧 ===== */
+.section-title {
+  font-size: 1.05em;
+  font-weight: bold;
+  color: #C41E3A;
+  border-left: 4px solid #FFB700;
+  padding-left: 10px;
+  margin: 20px 0 12px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #F0DABD;
+  margin: 20px 0;
 }
 
 .store-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
-
-
-.store-item {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  padding: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-/* .store-item:hover {
-  background-color: #e9e9e9;
-} */
-
-.store-item h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  text-align: left;
-  color: #007bff;
-}
-
-.store-item p {
-  margin: 5px 0;
-  font-size: 0.95em;
-}
-
-.store-image img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 20px auto;
-  border-radius: 8px;
-}
-
-.details-section {
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px dashed #eee;
-}
-
-.details-section h2 {
-  text-align: left;
-  margin-bottom: 10px;
-  color: #555;
-  font-size: 1.2em;
-}
-
-.details-section p {
-  font-size: 1.1em;
-  line-height: 1.6;
-}
-
-.icon {
-  vertical-align: middle;
-  margin-right: 5px;
-  width: 24px; /* Adjust size as needed */
-  height: 24px; /* Adjust size as needed */
-}
-
-.favorite-button {
-  background-color: rgb(224, 22, 224);
-  color: #333;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
-  margin-top: 20px;
-}
-
-.favorite-button:hover {
-  background-color: #feb6ff;
-}
-
-.button12 {
-  text-align: center;
-  background-color: #fff;
-  border: solid 2px #1c8fb9;
-  color: #000000;
-  border-radius: 20px;
-  padding: 10px 30px;
-  text-decoration: none;
-  font-size: 1em;
-  box-shadow: 0 5px 0 #14647f;
-  display: inline-block;
-  transition: .3s;
-  font-size: larger;
-}
-.button12:hover {
-  color: #8989de;
-  transform: translateY(5px);
-  box-shadow: 0 0 0 #191970;
-}
-
-
-.button13 {
-  /* 中央配置と横幅の調整 */
-  display: block;            /* 要素をブロックレベル要素に変更 */
-  width: fit-content;        /* コンテンツの幅に合わせて要素の幅を決定 */
-  margin: 10px auto;         /* 上下に10px、左右に自動マージンを適用して中央配置 */
-  padding: 10px 20px;        /* 左右のパディングを小さくして横幅を調整 */
-
-  /* 以下は元のスタイル */
-  text-align: center;
-  background-color: #fff;
-  border: solid 2px #1c8fb9;
-  color: #000000;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 1em;
-  box-shadow: 0 5px 0 #14647f;
-  transition: .3s;
-  font-size: larger;
-}
-
-.button13:hover {
-  color: #8989de;
-  transform: translateY(5px);
-  box-shadow: 0 0 0 #191970;
-}
-
-.button14 {
-  /* 中央配置と横幅の調整 (右寄せに変更) */
-  display: block;
-  width: fit-content;
-  margin: 10px 0 10px auto; /* 上下に10px、左に0、右にautoマージンを適用して右寄せ */
-  padding: 10px 20px;
-
-  /* 以下は元のスタイル */
-  text-align: center;
-  background-color: #fa6be5f6;
-  border: solid 2px #bf3eff;
-  color: #000000;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 1em;
-  box-shadow: 0 5px 0 #680f79;
-  transition: .3s;
-  font-size: larger;
-}
-
-.button14:hover {
-  color: #8989de;
-  transform: translateY(5px);
-  box-shadow: 0 0 0 #191970;
-}
-
-.favorite-checked {
-  background-color: #ccc !important;
-  color: #666 !important;
-  cursor: default;
-}
-
-.login-container {
-  max-width: 400px;
-  margin: 0px;
-  padding: 0px;
-  background-color: #ffffff;
-  border-radius: 0px;
-margin: auto;
-}
-
-.login-container label {
-
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #444;
-}
-
-.login-container input#nickname,
-.login-container input[type="email"],
-.login-container input[type="password"] {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1em;
-  box-sizing: border-box;
-}
-
-
-.login-container h1 {
-  font-size: 2em;
-  margin-bottom: 10px;
-}
-
-.login-container h2 {
-  font-size: 1.3em;
-  margin-bottom: 20px;
-  color: #555;
-}
-
-#megs {
-  margin-bottom: 15px;
-  color: red;
-  font-weight: bold;
-}
-
-/* まず .container:hover のbox-shadowやtransformを消す（または不要なら削除） */
-
-/* 各お店カードだけホバーで浮き上がる */
 .store-card {
-  transition: box-shadow 0.3s, transform 0.3s;
+  background: #FFFAF4;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.18s;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
 }
 
 .store-card:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,0,0,0.15);
-  transform: translateY(-8px) scale(1.03);
-  z-index: 2;
-  background-color: #fff; /* 必要なら背景色も指定 */
+  box-shadow: 0 6px 20px rgba(196, 30, 58, 0.16);
+  transform: translateY(-3px);
+}
+
+.store-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.store-card-name {
+  font-size: 1.05em;
+  font-weight: bold;
+  color: #2C1810;
+}
+
+.store-card-dist {
+  font-size: 0.8em;
+  color: #AAA;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.store-deal {
+  color: #C8660D;
+  font-weight: bold;
+  font-size: 1.05em;
+  padding: 4px 0 2px;
+}
+
+.store-card-note {
+  margin: 8px 0 0;
+  font-size: 0.8em;
+  color: #BBB;
+}
+
+/* ===== 詳細 ===== */
+.detail-card {
+  background: #FFFAF4;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.detail-top-left { flex: 1; }
+
+.detail-name {
+  margin: 0 0 6px;
+  font-size: 1.4em;
+  color: #2C1810;
+  line-height: 1.3;
+}
+
+.detail-dist {
+  margin: 0;
+  font-size: 0.85em;
+  color: #AAA;
+}
+
+.detail-rule {
+  border: none;
+  border-top: 1px solid #EEE;
+  margin: 16px 0;
+}
+
+.detail-coupon-section { margin-bottom: 4px; }
+
+.detail-coupon-label {
+  margin: 0 0 4px;
+  font-size: 0.75em;
+  font-weight: bold;
+  color: #AAA;
+  letter-spacing: 0.08em;
+}
+
+.detail-coupon-text {
+  margin: 0;
+  font-size: 1.35em;
+  font-weight: bold;
+  color: #C8660D;
+  line-height: 1.3;
+}
+
+.detail-info { margin-bottom: 4px; }
+
+.detail-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 0.93em;
+  color: #555;
+}
+
+.detail-info-icon {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+
+.detail-map {
+  display: block;
+  width: 100%;
+  height: 260px;
+  border: none;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
 }
