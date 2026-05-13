@@ -1,5 +1,6 @@
 import math
 import os
+from datetime import datetime
 import requests as req
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
@@ -42,6 +43,9 @@ def get_nearby_stores(
     current_user: dict = Depends(get_current_user),
 ):
     api_key = os.environ.get("GOOGLE_PLACES_API_KEY", "")
+    if not api_key:
+        print("[Places API] GOOGLE_PLACES_API_KEY is not set")
+        raise HTTPException(status_code=503, detail="Places API key is not configured")
     url = "https://places.googleapis.com/v1/places:searchNearby"
     headers = {
         "Content-Type": "application/json",
@@ -62,8 +66,11 @@ def get_nearby_stores(
 
     try:
         resp = req.post(url, json=body, headers=headers, timeout=15)
-        places = resp.json().get("places", [])
-    except Exception:
+        resp_json = resp.json()
+        print(f"[Places API] status={resp.status_code} body={resp_json}")
+        places = resp_json.get("places", [])
+    except Exception as e:
+        print(f"[Places API] exception: {e}")
         places = []
 
     stores = []
@@ -82,7 +89,8 @@ def get_nearby_stores(
 
         hours = place.get("regularOpeningHours", {})
         weekday_text = hours.get("weekdayDescriptions", [])
-        note = weekday_text[0] if weekday_text else ""
+        today_idx = datetime.now().weekday()  # 0=月曜, 6=日曜（Google APIと同じ順序）
+        note = weekday_text[today_idx] if len(weekday_text) > today_idx else ""
 
         stores.append({
             "store_id": store_id,

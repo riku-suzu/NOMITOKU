@@ -23,10 +23,10 @@ function StoreCard({ store, onNavigate }) {
 }
 
 function NearbyPage() {
-  const [stores, setStores] = useState(storeCache || [])
+  const [stores, setStores] = useState(storeCache !== null ? storeCache : [])
   const [favoriteIds, setFavoriteIds] = useState(favCache || [])
   const [geoError, setGeoError] = useState(null)
-  const [loading, setLoading] = useState(!storeCache)
+  const [loading, setLoading] = useState(storeCache === null)
   const navigate = useNavigate()
   const { dir } = useDir()
 
@@ -49,7 +49,7 @@ function NearbyPage() {
         setFavoriteIds(ids)
       })
 
-    if (storeCache) return
+    if (storeCache !== null) return
 
     if (!navigator.geolocation) {
       setGeoError('この端末では位置情報が使えません')
@@ -61,7 +61,10 @@ function NearbyPage() {
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords
         fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`, { headers })
-          .then((r) => r.json())
+          .then((r) => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`)
+            return r.json()
+          })
           .then((d) => { storeCache = d; setStores(d); setLoading(false) })
           .catch(() => { setGeoError('お店情報の取得に失敗しました'); setLoading(false) })
       },
@@ -102,21 +105,29 @@ function NearbyPage() {
           </>
         )}
 
-        <p className="section-title">近くの今のお得</p>
-        {loading && <p className="empty-text">現在地を取得中...</p>}
-        {geoError && <p className="empty-text">{geoError}</p>}
-        {!loading && !geoError && (
-          <div className="store-list">
-            {otherStores.length === 0
-              ? <p className="empty-text">近くに該当するお店が見つかりませんでした</p>
-              : otherStores.map((store) => (
-                <StoreCard
-                  key={store.store_id}
-                  store={store}
-                  onNavigate={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
-                />
-              ))}
+        {loading ? (
+          <div className="loading-overlay">
+            <div className="loading-spinner" />
+            <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>
           </div>
+        ) : (
+          <>
+            <p className="section-title">近くの今のお得</p>
+            {geoError && <p className="empty-text">{geoError}</p>}
+            {!geoError && (
+              <div className="store-list">
+                {otherStores.length === 0
+                  ? <p className="empty-text">近くに該当するお店が見つかりませんでした</p>
+                  : otherStores.map((store) => (
+                    <StoreCard
+                      key={store.store_id}
+                      store={store}
+                      onNavigate={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
+                    />
+                  ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </motion.div>

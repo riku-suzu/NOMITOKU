@@ -302,6 +302,38 @@ body {
   color: #BBB;
 }
 
+/* ===== ローディング ===== */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  gap: 20px;
+}
+
+.loading-spinner {
+  width: 52px;
+  height: 52px;
+  border: 5px solid #F0DABD;
+  border-top-color: #C41E3A;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #C41E3A;
+  font-size: 0.95em;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+
 /* ===== 詳細 ===== */
 .detail-card {
   background: #FFFAF4;

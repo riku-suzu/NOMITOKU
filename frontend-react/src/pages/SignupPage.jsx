@@ -11,11 +11,14 @@ function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
   const { dir, setDir } = useDir()
 
   const handleRegister = () => {
     if (!nickname || !email || !password) { setErrorMsg('全ての項目を入力してください'); return }
+    setSubmitting(true)
+    setErrorMsg('')
 
     fetch(`${API_HOST}/user`, {
       method: 'POST',
@@ -36,7 +39,7 @@ function SignupPage() {
       )
       .then((res) => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
       .then((data) => { localStorage.setItem('token', data.access_token); navigate('/nearby') })
-      .catch((error) => setErrorMsg(error.message))
+      .catch((error) => { setErrorMsg(error.message); setSubmitting(false) })
   }
 
   return (
@@ -49,27 +52,34 @@ function SignupPage() {
       transition={pageTransition}
     >
       <div className="page-content">
-        <div className="login-card">
-          <h2>新規会員登録</h2>
-          {errorMsg && <p className="error-msg">{errorMsg}</p>}
-          <div className="form-group">
-            <label>ニックネーム</label>
-            <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="ニックネーム" />
+        {submitting ? (
+          <div className="loading-overlay">
+            <div className="loading-spinner" />
+            <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>
           </div>
-          <div className="form-group">
-            <label>メールアドレス</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
+        ) : (
+          <div className="login-card">
+            <h2>新規会員登録</h2>
+            {errorMsg && <p className="error-msg">{errorMsg}</p>}
+            <div className="form-group">
+              <label>ニックネーム</label>
+              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="ニックネーム" />
+            </div>
+            <div className="form-group">
+              <label>メールアドレス</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
+            </div>
+            <div className="form-group">
+              <label>パスワード</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="パスワード" />
+            </div>
+            <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
+            <p className="signup-link">
+              すでにアカウントをお持ちの方は{' '}
+              <button onClick={() => { setDir(-1); navigate('/') }} className="btn-text">ログイン</button>
+            </p>
           </div>
-          <div className="form-group">
-            <label>パスワード</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="パスワード" />
-          </div>
-          <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
-          <p className="signup-link">
-            すでにアカウントをお持ちの方は{' '}
-            <button onClick={() => { setDir(-1); navigate('/') }} className="btn-text">ログイン</button>
-          </p>
-        </div>
+        )}
       </div>
     </motion.div>
   )
