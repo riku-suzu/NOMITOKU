@@ -231,6 +231,7 @@ body {
   text-align: center;
   padding: 12px 0;
   font-size: 0.9em;
+  white-space: pre-line;
 }
 
 /* ===== 一覧 ===== */
@@ -338,13 +339,6 @@ body {
   .loading-text {
     font-size: 1.1em;
   }
-}
-
-.btn-geo {
-  width: auto;
-  padding: 16px 40px;
-  font-size: 1.1em;
-  border-radius: 32px;
 }
 
 /* ===== 詳細 ===== */

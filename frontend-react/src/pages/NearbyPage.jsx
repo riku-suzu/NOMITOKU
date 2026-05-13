@@ -26,8 +26,7 @@ function NearbyPage() {
   const [stores, setStores] = useState(storeCache !== null ? storeCache : [])
   const [favoriteIds, setFavoriteIds] = useState(favCache || [])
   const [geoError, setGeoError] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [geoReady, setGeoReady] = useState(storeCache !== null)
+  const [loading, setLoading] = useState(storeCache === null)
   const navigate = useNavigate()
   const { dir } = useDir()
 
@@ -49,20 +48,14 @@ function NearbyPage() {
         favCache = ids
         setFavoriteIds(ids)
       })
-  }, [])
 
-  const handleFetchStores = () => {
+    if (storeCache !== null) return
+
     if (!navigator.geolocation) {
       setGeoError('この端末では位置情報が使えません')
-      setGeoReady(true)
+      setLoading(false)
       return
     }
-
-    setLoading(true)
-    setGeoReady(true)
-
-    const token = localStorage.getItem('token')
-    const headers = { Authorization: `Bearer ${token}` }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -75,13 +68,17 @@ function NearbyPage() {
           .then((d) => { storeCache = d; setStores(d); setLoading(false) })
           .catch(() => { setGeoError('お店情報の取得に失敗しました'); setLoading(false) })
       },
-      () => {
-        setGeoError('位置情報の許可が必要です')
+      (err) => {
+        if (err.code === 1) {
+          setGeoError('位置情報が許可されていません。\nSafari設定 → プライバシーとセキュリティ → 位置情報サービスをオンにしてください。')
+        } else {
+          setGeoError('位置情報を取得できませんでした。')
+        }
         setLoading(false)
       },
-      { timeout: 15000 }
+      { timeout: 15000, enableHighAccuracy: false }
     )
-  }
+  }, [])
 
   const favoriteStores = stores.filter((s) => favoriteIds.includes(s.store_id))
   const otherStores = stores.filter((s) => !favoriteIds.includes(s.store_id))
@@ -112,13 +109,7 @@ function NearbyPage() {
           </>
         )}
 
-        {!geoReady ? (
-          <div className="loading-overlay">
-            <button onClick={handleFetchStores} className="btn-primary btn-geo">
-              📍 近くのお得を探す
-            </button>
-          </div>
-        ) : loading ? (
+        {loading ? (
           <div className="loading-overlay">
             <div className="loading-spinner" />
             <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>
