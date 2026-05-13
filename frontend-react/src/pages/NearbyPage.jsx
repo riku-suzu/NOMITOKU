@@ -26,7 +26,8 @@ function NearbyPage() {
   const [stores, setStores] = useState(storeCache !== null ? storeCache : [])
   const [favoriteIds, setFavoriteIds] = useState(favCache || [])
   const [geoError, setGeoError] = useState(null)
-  const [loading, setLoading] = useState(storeCache === null)
+  const [loading, setLoading] = useState(false)
+  const [geoReady, setGeoReady] = useState(storeCache !== null)
   const navigate = useNavigate()
   const { dir } = useDir()
 
@@ -48,14 +49,20 @@ function NearbyPage() {
         favCache = ids
         setFavoriteIds(ids)
       })
+  }, [])
 
-    if (storeCache !== null) return
-
+  const handleFetchStores = () => {
     if (!navigator.geolocation) {
       setGeoError('この端末では位置情報が使えません')
-      setLoading(false)
+      setGeoReady(true)
       return
     }
+
+    setLoading(true)
+    setGeoReady(true)
+
+    const token = localStorage.getItem('token')
+    const headers = { Authorization: `Bearer ${token}` }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -72,9 +79,9 @@ function NearbyPage() {
         setGeoError('位置情報の許可が必要です')
         setLoading(false)
       },
-      { timeout: 10000 }
+      { timeout: 15000 }
     )
-  }, [])
+  }
 
   const favoriteStores = stores.filter((s) => favoriteIds.includes(s.store_id))
   const otherStores = stores.filter((s) => !favoriteIds.includes(s.store_id))
@@ -105,7 +112,13 @@ function NearbyPage() {
           </>
         )}
 
-        {loading ? (
+        {!geoReady ? (
+          <div className="loading-overlay">
+            <button onClick={handleFetchStores} className="btn-primary btn-geo">
+              📍 近くのお得を探す
+            </button>
+          </div>
+        ) : loading ? (
           <div className="loading-overlay">
             <div className="loading-spinner" />
             <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>

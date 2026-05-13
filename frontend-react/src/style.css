@@ -334,6 +334,19 @@ body {
   letter-spacing: 0.03em;
 }
 
+@media (max-width: 480px) {
+  .loading-text {
+    font-size: 1.1em;
+  }
+}
+
+.btn-geo {
+  width: auto;
+  padding: 16px 40px;
+  font-size: 1.1em;
+  border-radius: 32px;
+}
+
 /* ===== 詳細 ===== */
 .detail-card {
   background: #FFFAF4;
