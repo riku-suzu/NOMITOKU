@@ -10,6 +10,7 @@ function ShopDetailPage() {
   const location = useLocation()
   const [store, setStore] = useState(location.state?.store || null)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [favLoading, setFavLoading] = useState(false)
   const navigate = useNavigate()
   const { storeId } = useParams()
   const { dir, setDir } = useDir()
@@ -35,6 +36,8 @@ function ShopDetailPage() {
   }, [storeId])
 
   const handleToggleFavorite = () => {
+    if (favLoading) return
+    setFavLoading(true)
     const token = localStorage.getItem('token')
     const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     fetch(`${API_HOST}/me/favoritestores`, { headers: { Authorization: `Bearer ${token}` } })
@@ -45,7 +48,8 @@ function ShopDetailPage() {
         ids = isFavorite ? ids.filter((id) => id !== Number(storeId)) : [...ids, Number(storeId)]
         return fetch(`${API_HOST}/update_favorite`, { method: 'PUT', headers, body: JSON.stringify(ids) })
       })
-      .then(() => setIsFavorite(!isFavorite))
+      .then(() => { setIsFavorite(!isFavorite); setFavLoading(false) })
+      .catch(() => setFavLoading(false))
   }
 
   if (!store) return <p style={{ textAlign: 'center', padding: '48px', color: '#ccc' }}>読み込み中...</p>
@@ -70,7 +74,7 @@ function ShopDetailPage() {
               onClick={handleToggleFavorite}
               className={`btn-fav${isFavorite ? ' btn-fav--on' : ''}`}
             >
-              {isFavorite ? '♥ お気に入り済み' : '♡ お気に入り'}
+              {favLoading ? '登録中...' : isFavorite ? '♥ お気に入り済み' : '♡ お気に入り'}
             </button>
           </div>
 

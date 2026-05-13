@@ -318,7 +318,7 @@ body {
   border: 10px solid #F0DABD;
   border-top-color: #C41E3A;
   border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
