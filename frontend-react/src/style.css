@@ -313,9 +313,9 @@ body {
 }
 
 .loading-spinner {
-  width: 52px;
-  height: 52px;
-  border: 5px solid #F0DABD;
+  width: 104px;
+  height: 104px;
+  border: 10px solid #F0DABD;
   border-top-color: #C41E3A;
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
@@ -327,7 +327,7 @@ body {
 
 .loading-text {
   color: #C41E3A;
-  font-size: 0.95em;
+  font-size: 1.9em;
   font-weight: bold;
   text-align: center;
   line-height: 1.6;

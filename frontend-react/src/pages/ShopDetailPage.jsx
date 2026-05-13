@@ -70,7 +70,7 @@ function ShopDetailPage() {
               onClick={handleToggleFavorite}
               className={`btn-fav${isFavorite ? ' btn-fav--on' : ''}`}
             >
-              {isFavorite ? '♥' : '♡'}
+              {isFavorite ? '♥ お気に入り済み' : '♡ お気に入り'}
             </button>
           </div>
 
