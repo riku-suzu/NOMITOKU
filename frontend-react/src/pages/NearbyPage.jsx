@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useDir } from '../context/DirectionCtx'
@@ -27,6 +27,7 @@ function NearbyPage() {
   const [favoriteIds, setFavoriteIds] = useState(favCache || [])
   const [geoError, setGeoError] = useState(null)
   const [loading, setLoading] = useState(storeCache === null)
+  const [loadingPhase, setLoadingPhase] = useState('geo')
   const navigate = useNavigate()
   const { dir } = useDir()
 
@@ -37,8 +38,11 @@ function NearbyPage() {
     const headers = { Authorization: `Bearer ${token}` }
 
     fetch(`${API_HOST}/me`, { headers })
-      .then((r) => r.json())
-      .then((d) => localStorage.setItem('nickname', d.nickname))
+      .then((r) => {
+        if (r.status === 401) { localStorage.removeItem('token'); navigate('/'); return null }
+        return r.json()
+      })
+      .then((d) => d && localStorage.setItem('nickname', d.nickname))
 
     fetch(`${API_HOST}/me/favoritestores`, { headers })
       .then((r) => r.json())
@@ -60,6 +64,7 @@ function NearbyPage() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords
+        setLoadingPhase('fetch')
         fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`, { headers })
           .then((r) => {
             if (!r.ok) throw new Error(`HTTP ${r.status}`)
@@ -112,7 +117,9 @@ function NearbyPage() {
         {loading ? (
           <div className="loading-overlay">
             <div className="loading-spinner" />
-            <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>
+            <p className="loading-text">
+              {loadingPhase === 'fetch' ? 'あともう少しです' : 'あなたに最適なお得を\n頑張って探しています'}
+            </p>
           </div>
         ) : (
           <>

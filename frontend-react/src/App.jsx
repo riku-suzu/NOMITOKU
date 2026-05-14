@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { DirectionCtx } from './context/DirectionCtx'
@@ -82,6 +82,12 @@ function AnimatedRoutes({ dir, setDir }) {
 
 function App() {
   const [dir, setDir] = useState(1)
+
+  useEffect(() => {
+    const handlePop = () => setDir(-1)
+    window.addEventListener('popstate', handlePop)
+    return () => window.removeEventListener('popstate', handlePop)
+  }, [])
 
   return (
     <BrowserRouter>

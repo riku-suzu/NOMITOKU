@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useDir } from '../context/DirectionCtx'
@@ -28,6 +28,15 @@ function IndexPage() {
       .then((data) => { localStorage.setItem('token', data.access_token); navigate('/nearby') })
       .catch((error) => { setErrorMsg(error.message); setSubmitting(false) })
   }
+
+  // ログイン済みなら一覧へ（トークンが有効な場合のみ）
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    fetch(`${API_HOST}/me`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => { if (r.ok) navigate('/nearby'); else localStorage.removeItem('token') })
+      .catch(() => {})
+  }, [])
 
   return (
     <motion.div

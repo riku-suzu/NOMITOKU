@@ -333,6 +333,7 @@ body {
   text-align: center;
   line-height: 1.6;
   letter-spacing: 0.03em;
+  white-space: pre-line;
 }
 
 @media (max-width: 480px) {
