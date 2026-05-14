@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, useNavigationType, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { DirectionCtx } from './context/DirectionCtx'
 import Header from './components/Header'
@@ -64,38 +64,34 @@ function BgDecoration() {
   )
 }
 
-function AnimatedRoutes({ dir, setDir }) {
+function AnimatedRoutes() {
   const location = useLocation()
+  const navType = useNavigationType()
+  const [manualDir, setManualDir] = useState(1)
+
+  const dir = navType === 'POP' ? -1 : manualDir
 
   return (
-    <AnimatePresence mode="wait" custom={dir} onExitComplete={() => setDir(1)}>
-      <Routes location={location} key={location.key}>
-        <Route path="/" element={<IndexPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/nearby" element={<NearbyPage />} />
-        <Route path="/shop/:storeId" element={<ShopDetailPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AnimatePresence>
+    <DirectionCtx.Provider value={{ dir, setDir: setManualDir }}>
+      <AnimatePresence mode="wait" custom={dir} onExitComplete={() => setManualDir(1)}>
+        <Routes location={location} key={location.key}>
+          <Route path="/" element={<IndexPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/nearby" element={<NearbyPage />} />
+          <Route path="/shop/:storeId" element={<ShopDetailPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
+    </DirectionCtx.Provider>
   )
 }
 
 function App() {
-  const [dir, setDir] = useState(1)
-
-  useEffect(() => {
-    const handlePop = () => setDir(-1)
-    window.addEventListener('popstate', handlePop)
-    return () => window.removeEventListener('popstate', handlePop)
-  }, [])
-
   return (
     <BrowserRouter>
-      <DirectionCtx.Provider value={{ dir, setDir }}>
-        <BgDecoration />
-        <Header />
-        <AnimatedRoutes dir={dir} setDir={setDir} />
-      </DirectionCtx.Provider>
+      <BgDecoration />
+      <Header />
+      <AnimatedRoutes />
     </BrowserRouter>
   )
 }
