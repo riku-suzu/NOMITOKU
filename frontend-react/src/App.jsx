@@ -45,6 +45,8 @@ const BG_ITEMS = [
 ]
 
 function BgDecoration() {
+  const location = useLocation()
+  if (location.pathname === '/' || location.pathname.startsWith('/shop/')) return null
   return (
     <div className="bg-deco" aria-hidden="true">
       {BG_ITEMS.map((item, i) => (

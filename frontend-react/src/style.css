@@ -608,10 +608,10 @@ body {
 .store-overlay-section {
   font-size: 0.82em;
   font-weight: bold;
-  color: rgba(255, 200, 100, 0.85);
+  color: #C41E3A;
   letter-spacing: 0.1em;
   margin: 14px 0 8px;
-  border-left: 3px solid #FFB040;
+  border-left: 3px solid #FFB700;
   padding-left: 8px;
 }
 
@@ -632,19 +632,17 @@ body {
 }
 
 .store-card-dark {
-  background: rgba(15, 6, 0, 0.78);
-  border: 1px solid rgba(255, 180, 80, 0.28);
+  background: rgba(255, 250, 244, 0.93);
   border-radius: 10px;
   padding: 14px 16px;
   margin-bottom: 10px;
   cursor: pointer;
-  transition: background 0.18s, transform 0.15s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  transition: box-shadow 0.18s, transform 0.15s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.22);
 }
 
 .store-card-dark:hover {
-  background: rgba(25, 10, 0, 0.78);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
   transform: translateY(-2px);
 }
 
@@ -658,18 +656,18 @@ body {
 .store-card-dark-name {
   font-size: 1.05em;
   font-weight: bold;
-  color: #FFF5E0;
+  color: #2C1810;
 }
 
 .store-card-dark-dist {
   font-size: 0.78em;
-  color: rgba(255,255,255,0.55);
+  color: #AAA;
   white-space: nowrap;
   margin-left: 8px;
 }
 
 .store-card-dark-deal {
-  color: #FFC060;
+  color: #C8660D;
   font-weight: bold;
   font-size: 1.05em;
 }
@@ -677,7 +675,7 @@ body {
 .store-card-dark-note {
   margin: 6px 0 0;
   font-size: 0.78em;
-  color: rgba(255,255,255,0.5);
+  color: #BBB;
 }
 
 /* ===== お店詳細（フォト背景） ===== */
@@ -712,34 +710,32 @@ body {
 }
 
 .shop-detail-card {
-  background: rgba(15, 6, 0, 0.78);
-  border: 1px solid rgba(255, 180, 80, 0.22);
+  background: rgba(255, 250, 244, 0.93);
   border-radius: 12px;
   padding: 18px 20px;
   margin-bottom: 10px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.22);
 }
 
 .shop-detail-name {
   margin: 0 0 6px;
   font-size: 1.4em;
   font-weight: bold;
-  color: #FFF5E0;
+  color: #2C1810;
   line-height: 1.3;
 }
 
 .shop-detail-dist {
   margin: 0;
   font-size: 0.85em;
-  color: rgba(255,255,255,0.5);
+  color: #AAA;
 }
 
 .shop-detail-coupon-label {
   margin: 0 0 6px;
   font-size: 0.75em;
   font-weight: bold;
-  color: rgba(255,200,100,0.75);
+  color: #AAA;
   letter-spacing: 0.08em;
 }
 
@@ -747,7 +743,7 @@ body {
   margin: 0;
   font-size: 1.35em;
   font-weight: bold;
-  color: #FFC060;
+  color: #C8660D;
   line-height: 1.3;
 }
 
@@ -757,8 +753,8 @@ body {
   gap: 12px;
   padding: 8px 0;
   font-size: 0.9em;
-  color: rgba(255,240,200,0.82);
-  border-top: 1px solid rgba(255,255,255,0.07);
+  color: #555;
+  border-top: 1px solid #EEE;
 }
 
 .shop-detail-info-row:first-child { border-top: none; }
