@@ -425,7 +425,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1A0A00;
 }
 
 .noren-panel {
@@ -493,16 +492,16 @@ body {
   margin: 0;
   font-size: 4.5em;
   font-weight: bold;
-  color: #C41E3A;
+  color: #2C1810;
   letter-spacing: 0.45em;
-  text-shadow: 1px 2px 0 rgba(0,0,0,0.12);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
   line-height: 1.1;
 }
 
 .noren-tagline {
   margin: 0;
   font-size: 0.85em;
-  color: #6B3A20;
+  color: #5A3010;
   letter-spacing: 0.25em;
 }
 
