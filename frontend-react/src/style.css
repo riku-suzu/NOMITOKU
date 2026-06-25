@@ -435,15 +435,25 @@ body {
   background-size: cover;
   background-position: center;
   transform-origin: center center;
+  filter: brightness(1.2) saturate(0.8);
 }
 
-/* 暗めのオーバーレイ（文字読みやすくする） */
+/* オーバーレイ（白濁 + 文字読みやすくする） */
 .landing-screen::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(10, 4, 0, 0.52);
+  background: rgba(255, 245, 230, 0.22);
   z-index: 5;
+  pointer-events: none;
+}
+
+.landing-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 3, 0, 0.38);
+  z-index: 6;
   pointer-events: none;
 }
 
