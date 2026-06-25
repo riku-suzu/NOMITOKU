@@ -443,20 +443,20 @@ body {
 /* 木枠（外枠） */
 .noren-panel--left {
   left: 0;
-  border-top: 8px solid #2C1810;
-  border-bottom: 8px solid #2C1810;
-  border-left: 8px solid #2C1810;
-  border-right: 4px solid #2C1810;
-  box-shadow: inset -4px 0 10px rgba(0,0,0,0.08), 4px 0 16px rgba(0,0,0,0.35);
+  border-top: 8px solid #5C3A1A;
+  border-bottom: 8px solid #5C3A1A;
+  border-left: 8px solid #5C3A1A;
+  border-right: 2px solid #8B6040;
+  box-shadow: inset -2px 0 8px rgba(0,0,0,0.06), 3px 0 12px rgba(0,0,0,0.2);
 }
 
 .noren-panel--right {
   right: 0;
-  border-top: 8px solid #2C1810;
-  border-bottom: 8px solid #2C1810;
-  border-right: 8px solid #2C1810;
-  border-left: 4px solid #2C1810;
-  box-shadow: inset 4px 0 10px rgba(0,0,0,0.08), -4px 0 16px rgba(0,0,0,0.35);
+  border-top: 8px solid #5C3A1A;
+  border-bottom: 8px solid #5C3A1A;
+  border-right: 8px solid #5C3A1A;
+  border-left: 2px solid #8B6040;
+  box-shadow: inset 2px 0 8px rgba(0,0,0,0.06), -3px 0 12px rgba(0,0,0,0.2);
 }
 
 /* 引き手 */
@@ -490,7 +490,7 @@ body {
 
 .noren-title {
   margin: 0;
-  font-size: 4.5em;
+  font-size: 6em;
   font-weight: bold;
   color: #2C1810;
   letter-spacing: 0.45em;
@@ -531,7 +531,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .noren-title { font-size: 3em; }
+  .noren-title { font-size: 4em; }
   .noren-btn   { padding: 13px 36px; }
 }
 
