@@ -432,34 +432,39 @@ body {
   top: 0;
   bottom: 0;
   width: 50%;
-  /* 和紙の質感 */
-  background-color: #F0E6CC;
-  background-image:
-    linear-gradient(rgba(80, 50, 10, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(80, 50, 10, 0.055) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background: linear-gradient(160deg, #F8F1DF 0%, #EEE3C8 60%, #E6D8B2 100%);
 }
 
-/* 木枠（外枠） */
+/* 外枠（木） */
 .noren-panel--left {
   left: 0;
-  border-top: 8px solid #5C3A1A;
-  border-bottom: 8px solid #5C3A1A;
-  border-left: 8px solid #5C3A1A;
-  border-right: 2px solid #8B6040;
-  box-shadow: inset -2px 0 8px rgba(0,0,0,0.06), 3px 0 12px rgba(0,0,0,0.2);
+  border-top: 10px solid #6B4020;
+  border-bottom: 10px solid #6B4020;
+  border-left: 10px solid #6B4020;
+  border-right: 2px solid #7A5030;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.22);
 }
 
 .noren-panel--right {
   right: 0;
-  border-top: 8px solid #5C3A1A;
-  border-bottom: 8px solid #5C3A1A;
-  border-right: 8px solid #5C3A1A;
-  border-left: 2px solid #8B6040;
-  box-shadow: inset 2px 0 8px rgba(0,0,0,0.06), -3px 0 12px rgba(0,0,0,0.2);
+  border-top: 10px solid #6B4020;
+  border-bottom: 10px solid #6B4020;
+  border-right: 10px solid #6B4020;
+  border-left: 2px solid #7A5030;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.22);
 }
 
-/* 引き手 */
+/* 内枠（左パネル::before、右パネル::after） */
+.noren-panel--left::before,
+.noren-panel--right::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1.5px solid rgba(92, 58, 26, 0.22);
+  pointer-events: none;
+}
+
+/* 引き手（左パネル::after、右パネル::before） */
 .noren-panel--left::after,
 .noren-panel--right::before {
   content: '';
@@ -467,14 +472,15 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 10px;
-  height: 52px;
-  background: linear-gradient(to bottom, #8B5E1A, #5C3A0A, #8B5E1A);
+  height: 56px;
+  background: linear-gradient(to right, #7A5020, #A87840, #7A5020);
   border-radius: 5px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  z-index: 2;
 }
 
-.noren-panel--left::after  { right: 10px; }
-.noren-panel--right::before { left: 10px; }
+.noren-panel--left::after   { right: 12px; }
+.noren-panel--right::before { left: 12px; }
 
 .noren-center {
   position: relative;
