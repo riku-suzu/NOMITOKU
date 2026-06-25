@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useDir } from '../context/DirectionCtx'
-import { pageVariants, pageTransition } from '../utils/motion'
+import { pageVariants, pageTransition, zoomFromBackVariants, zoomFromBackTransition } from '../utils/motion'
 
 const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
 
@@ -29,7 +29,9 @@ function NearbyPage() {
   const [loading, setLoading] = useState(storeCache === null)
   const [loadingPhase, setLoadingPhase] = useState('geo')
   const navigate = useNavigate()
+  const location = useLocation()
   const { dir } = useDir()
+  const fromLanding = location.state?.fromLanding
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -91,11 +93,11 @@ function NearbyPage() {
   return (
     <motion.div
       custom={dir}
-      variants={pageVariants}
+      variants={fromLanding ? zoomFromBackVariants : pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={pageTransition}
+      transition={fromLanding ? zoomFromBackTransition : pageTransition}
     >
       <div className="page-content">
         {favoriteStores.length > 0 && (
