@@ -6,7 +6,6 @@ import Header from './components/Header'
 import LandingPage from './pages/LandingPage'
 import IndexPage from './pages/IndexPage'
 import SignupPage from './pages/SignupPage'
-import NearbyPage from './pages/NearbyPage'
 import ShopDetailPage from './pages/ShopDetailPage'
 
 const BG_ITEMS = [
@@ -87,7 +86,6 @@ function AnimatedRoutes() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<IndexPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/nearby" element={<NearbyPage />} />
           <Route path="/shop/:storeId" element={<ShopDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
