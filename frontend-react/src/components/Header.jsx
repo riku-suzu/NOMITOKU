@@ -7,7 +7,7 @@ function Header() {
   const location = useLocation()
   const { setDir } = useDir()
 
-  if (location.pathname === '/') return null
+  if (location.pathname === '/' || location.pathname.startsWith('/shop/')) return null
   const token = localStorage.getItem('token')
   const nickname = localStorage.getItem('nickname') || ''
 
