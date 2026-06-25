@@ -447,18 +447,13 @@ body {
   justify-content: center;
 }
 
-/* 右パネル（居酒屋の雰囲気グラデーション）
-   実際の写真を使う場合は public/izakaya.jpg を置いて
-   background-image に url('/izakaya.jpg') を追加してください */
+/* 右パネル（居酒屋写真） */
 .noren-panel--right {
   right: 0;
   background-color: #1A0800;
-  background-image:
-    radial-gradient(circle at 48% 26%, rgba(255, 175, 50, 0.55) 0%, rgba(200, 100, 10, 0.1) 30%, transparent 52%),
-    radial-gradient(circle at 20% 62%, rgba(200, 75, 15, 0.22) 0%, transparent 30%),
-    radial-gradient(circle at 80% 55%, rgba(210, 90, 15, 0.2) 0%, transparent 28%),
-    radial-gradient(circle at 58% 86%, rgba(160, 50, 8, 0.18) 0%, transparent 24%),
-    linear-gradient(170deg, #150500 0%, #2A1000 40%, #1C0800 100%);
+  background-image: url('/izakaya.png');
+  background-size: cover;
+  background-position: center;
   border-top: 10px solid #6B4020;
   border-bottom: 10px solid #6B4020;
   border-right: 10px solid #6B4020;
