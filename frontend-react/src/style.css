@@ -432,32 +432,24 @@ body {
   top: 0;
   bottom: 0;
   width: 50%;
-  background-color: #1B3560;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 59px,
-      rgba(255, 255, 255, 0.04) 59px,
-      rgba(255, 255, 255, 0.04) 60px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 19px,
-      rgba(255, 255, 255, 0.02) 19px,
-      rgba(255, 255, 255, 0.02) 20px
-    );
+  background-color: #C41E3A;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 2px,
+    transparent 2px,
+    transparent 12px
+  );
 }
 
 .noren-panel--left {
   left: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 2px solid rgba(255, 224, 102, 0.25);
 }
 
 .noren-panel--right {
   right: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 2px solid rgba(255, 224, 102, 0.25);
 }
 
 .noren-center {
@@ -467,16 +459,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 0 24px;
   pointer-events: auto;
 }
 
-.noren-tagline {
-  margin: 0;
-  font-size: 0.88em;
-  color: rgba(255, 224, 130, 0.75);
-  letter-spacing: 0.25em;
+.noren-lantern {
+  font-size: 3.2em;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  animation: lanternSway 3s ease-in-out infinite;
+}
+
+@keyframes lanternSway {
+  0%, 100% { transform: rotate(-4deg); }
+  50%       { transform: rotate(4deg); }
 }
 
 .noren-title {
@@ -485,36 +482,46 @@ body {
   font-weight: bold;
   color: #FFE066;
   letter-spacing: 0.45em;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
   line-height: 1.1;
 }
 
+.noren-tagline {
+  margin: 0;
+  font-size: 0.88em;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.22em;
+}
+
 .noren-btn {
-  margin-top: 36px;
-  padding: 14px 52px;
-  background: transparent;
-  border: 2px solid rgba(255, 224, 102, 0.7);
-  color: #FFE066;
-  font-size: 1.05em;
+  margin-top: 32px;
+  padding: 15px 52px;
+  background: #FFE066;
+  color: #C41E3A;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1em;
   font-weight: bold;
-  border-radius: 3px;
+  letter-spacing: 0.12em;
   cursor: pointer;
-  letter-spacing: 0.2em;
-  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .noren-btn:hover {
-  background: rgba(255, 224, 102, 0.1);
-  border-color: #FFE066;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
 }
 
 .noren-btn:active {
-  background: rgba(255, 224, 102, 0.2);
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 480px) {
-  .noren-title { font-size: 3em; }
-  .noren-btn { padding: 13px 40px; }
+  .noren-title   { font-size: 3em; }
+  .noren-lantern { font-size: 2.6em; }
+  .noren-btn     { padding: 13px 40px; }
 }
 
 /* ===== ログイン戻るボタン ===== */

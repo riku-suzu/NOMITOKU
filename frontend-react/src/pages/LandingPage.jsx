@@ -29,10 +29,11 @@ function LandingPage() {
         animate={isOpening ? { opacity: 0, y: -16 } : { opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
       >
-        <p className="noren-tagline">今夜のお得、見つかる</p>
+        <div className="noren-lantern">🏮</div>
         <h1 className="noren-title">ノミトク</h1>
+        <p className="noren-tagline">今夜のお得、ここにある</p>
         <button className="noren-btn" onClick={handleEnter}>
-          お得を探す
+          お得を探す 🍺
         </button>
       </motion.div>
     </div>
