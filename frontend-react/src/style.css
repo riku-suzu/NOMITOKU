@@ -416,7 +416,7 @@ body {
 }
 
 
-/* ===== 暖簾トップ画面 ===== */
+/* ===== 襖トップ画面 ===== */
 .noren-screen {
   position: fixed;
   inset: 0;
@@ -425,6 +425,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #1A0A00;
 }
 
 .noren-panel {
@@ -432,25 +433,49 @@ body {
   top: 0;
   bottom: 0;
   width: 50%;
-  background-color: #C41E3A;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(255, 255, 255, 0.04) 0px,
-    rgba(255, 255, 255, 0.04) 2px,
-    transparent 2px,
-    transparent 12px
-  );
+  /* 和紙の質感 */
+  background-color: #F0E6CC;
+  background-image:
+    linear-gradient(rgba(80, 50, 10, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 50, 10, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
+/* 木枠（外枠） */
 .noren-panel--left {
   left: 0;
-  border-right: 2px solid rgba(255, 224, 102, 0.25);
+  border-top: 8px solid #2C1810;
+  border-bottom: 8px solid #2C1810;
+  border-left: 8px solid #2C1810;
+  border-right: 4px solid #2C1810;
+  box-shadow: inset -4px 0 10px rgba(0,0,0,0.08), 4px 0 16px rgba(0,0,0,0.35);
 }
 
 .noren-panel--right {
   right: 0;
-  border-left: 2px solid rgba(255, 224, 102, 0.25);
+  border-top: 8px solid #2C1810;
+  border-bottom: 8px solid #2C1810;
+  border-right: 8px solid #2C1810;
+  border-left: 4px solid #2C1810;
+  box-shadow: inset 4px 0 10px rgba(0,0,0,0.08), -4px 0 16px rgba(0,0,0,0.35);
 }
+
+/* 引き手 */
+.noren-panel--left::after,
+.noren-panel--right::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 52px;
+  background: linear-gradient(to bottom, #8B5E1A, #5C3A0A, #8B5E1A);
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.noren-panel--left::after  { right: 10px; }
+.noren-panel--right::before { left: 10px; }
 
 .noren-center {
   position: relative;
@@ -468,48 +493,47 @@ body {
   margin: 0;
   font-size: 4.5em;
   font-weight: bold;
-  color: #FFE066;
+  color: #C41E3A;
   letter-spacing: 0.45em;
-  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 2px 0 rgba(0,0,0,0.12);
   line-height: 1.1;
 }
 
 .noren-tagline {
   margin: 0;
-  font-size: 0.88em;
-  color: rgba(255, 255, 255, 0.88);
-  letter-spacing: 0.22em;
+  font-size: 0.85em;
+  color: #6B3A20;
+  letter-spacing: 0.25em;
 }
 
 .noren-btn {
   margin-top: 32px;
-  padding: 15px 52px;
-  background: #FFE066;
-  color: #C41E3A;
+  padding: 14px 48px;
+  background: #C41E3A;
+  color: #FFE066;
   border: none;
-  border-radius: 30px;
-  font-size: 1.1em;
+  border-radius: 4px;
+  font-size: 1.05em;
   font-weight: bold;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   cursor: pointer;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 3px 12px rgba(196, 30, 58, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
 .noren-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
+  background: #A8162F;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(196, 30, 58, 0.45);
 }
 
 .noren-btn:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 480px) {
-  .noren-title   { font-size: 3em; }
-  .noren-lantern { font-size: 2.6em; }
-  .noren-btn     { padding: 13px 40px; }
+  .noren-title { font-size: 3em; }
+  .noren-btn   { padding: 13px 36px; }
 }
 
 /* ===== ログイン戻るボタン ===== */
