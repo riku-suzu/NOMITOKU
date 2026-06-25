@@ -81,7 +81,7 @@ function AnimatedRoutes() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/nearby" element={<NearbyPage />} />
           <Route path="/shop/:storeId" element={<ShopDetailPage />} />
-          <Route path="*" element={<Navigate to="/nearby" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
     </DirectionCtx.Provider>

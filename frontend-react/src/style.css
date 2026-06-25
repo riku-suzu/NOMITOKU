@@ -528,6 +528,158 @@ body {
   .landing-content { padding: 48px 40px; }
 }
 
+/* ===== ローディング（ランディング上） ===== */
+.landing-loading {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.loading-spinner--light {
+  width: 56px;
+  height: 56px;
+  border: 6px solid rgba(255,255,255,0.2);
+  border-top-color: #FFE8C0;
+  border-radius: 50%;
+  animation: spin 1.6s linear infinite;
+}
+
+.loading-text--light {
+  color: #FFE8C0;
+  font-size: 1.1em;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+
+/* ===== お店一覧オーバーレイ ===== */
+.store-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.store-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 10px;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, rgba(10,4,0,0.6) 0%, transparent 100%);
+}
+
+.store-overlay-logo {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: #FFE8C0;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+
+.store-overlay-login-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,240,200,0.9);
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 0.82em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.store-overlay-login-btn:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.store-overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 16px 40px;
+}
+
+.store-overlay-section {
+  font-size: 0.82em;
+  font-weight: bold;
+  color: rgba(255, 200, 100, 0.85);
+  letter-spacing: 0.1em;
+  margin: 14px 0 8px;
+  border-left: 3px solid #FFB040;
+  padding-left: 8px;
+}
+
+.store-overlay-error {
+  color: rgba(255, 180, 180, 0.9);
+  text-align: center;
+  padding: 24px 0;
+  white-space: pre-line;
+  font-size: 0.9em;
+  line-height: 1.7;
+}
+
+.store-overlay-empty {
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.88em;
+}
+
+.store-card-dark {
+  background: rgba(15, 6, 0, 0.62);
+  border: 1px solid rgba(255, 180, 80, 0.18);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.store-card-dark:hover {
+  background: rgba(25, 10, 0, 0.78);
+  transform: translateY(-2px);
+}
+
+.store-card-dark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.store-card-dark-name {
+  font-size: 1.02em;
+  font-weight: bold;
+  color: #FFE8C0;
+}
+
+.store-card-dark-dist {
+  font-size: 0.78em;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.store-card-dark-deal {
+  color: #FFB040;
+  font-weight: bold;
+  font-size: 1.02em;
+}
+
+.store-card-dark-note {
+  margin: 6px 0 0;
+  font-size: 0.78em;
+  color: rgba(255,255,255,0.4);
+}
+
 /* ===== ログイン戻るボタン ===== */
 .btn-back-login {
   display: block;
