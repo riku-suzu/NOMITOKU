@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigationType, Navigate 
 import { AnimatePresence } from 'framer-motion'
 import { DirectionCtx } from './context/DirectionCtx'
 import Header from './components/Header'
+import LandingPage from './pages/LandingPage'
 import IndexPage from './pages/IndexPage'
 import SignupPage from './pages/SignupPage'
 import NearbyPage from './pages/NearbyPage'
@@ -75,7 +76,7 @@ function AnimatedRoutes() {
     <DirectionCtx.Provider value={{ dir, setDir: setManualDir }}>
       <AnimatePresence mode="wait" custom={dir} onExitComplete={() => setManualDir(1)}>
         <Routes location={location} key={location.key}>
-          <Route path="/" element={<Navigate to="/nearby" replace />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<IndexPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/nearby" element={<NearbyPage />} />

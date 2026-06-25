@@ -4,8 +4,10 @@ import { useDir } from '../context/DirectionCtx'
 
 function Header() {
   const navigate = useNavigate()
-  useLocation()
+  const location = useLocation()
   const { setDir } = useDir()
+
+  if (location.pathname === '/') return null
   const token = localStorage.getItem('token')
   const nickname = localStorage.getItem('nickname') || ''
 

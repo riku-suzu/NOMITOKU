@@ -70,6 +70,9 @@ function IndexPage() {
               アカウントをお持ちでない方は{' '}
               <button onClick={() => navigate('/signup')} className="btn-text">新規会員登録</button>
             </p>
+            <button onClick={() => navigate(-1)} className="btn-back-login">
+              ← 戻る
+            </button>
           </div>
         )}
       </div>

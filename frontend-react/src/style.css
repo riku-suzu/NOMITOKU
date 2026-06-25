@@ -416,6 +416,124 @@ body {
 }
 
 
+/* ===== 暖簾トップ画面 ===== */
+.noren-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noren-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: #1B3560;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 59px,
+      rgba(255, 255, 255, 0.04) 59px,
+      rgba(255, 255, 255, 0.04) 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(255, 255, 255, 0.02) 19px,
+      rgba(255, 255, 255, 0.02) 20px
+    );
+}
+
+.noren-panel--left {
+  left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.noren-panel--right {
+  right: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.noren-center {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  pointer-events: auto;
+}
+
+.noren-tagline {
+  margin: 0;
+  font-size: 0.88em;
+  color: rgba(255, 224, 130, 0.75);
+  letter-spacing: 0.25em;
+}
+
+.noren-title {
+  margin: 0;
+  font-size: 4.5em;
+  font-weight: bold;
+  color: #FFE066;
+  letter-spacing: 0.45em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  line-height: 1.1;
+}
+
+.noren-btn {
+  margin-top: 36px;
+  padding: 14px 52px;
+  background: transparent;
+  border: 2px solid rgba(255, 224, 102, 0.7);
+  color: #FFE066;
+  font-size: 1.05em;
+  font-weight: bold;
+  border-radius: 3px;
+  cursor: pointer;
+  letter-spacing: 0.2em;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.noren-btn:hover {
+  background: rgba(255, 224, 102, 0.1);
+  border-color: #FFE066;
+}
+
+.noren-btn:active {
+  background: rgba(255, 224, 102, 0.2);
+}
+
+@media (max-width: 480px) {
+  .noren-title { font-size: 3em; }
+  .noren-btn { padding: 13px 40px; }
+}
+
+/* ===== ログイン戻るボタン ===== */
+.btn-back-login {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: #AAA;
+  font-size: 0.9em;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.btn-back-login:hover { color: #666; }
+
 .detail-map {
   display: block;
   width: 100%;
