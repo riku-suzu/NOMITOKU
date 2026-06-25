@@ -484,6 +484,7 @@ body {
   font-weight: 700;
   color: #FFE8C0;
   letter-spacing: 0.03em;
+  white-space: nowrap;
   line-height: 1.1;
   text-shadow: 0 2px 24px rgba(0,0,0,0.6), 0 0 60px rgba(255,160,40,0.25);
 }
@@ -521,9 +522,10 @@ body {
 }
 
 @media (max-width: 480px) {
-  .landing-title   { font-size: 3.8em; letter-spacing: 0.3em; }
-  .landing-tagline { font-size: 0.78em; margin-bottom: 36px; }
+  .landing-title   { font-size: 3em; }
+  .landing-tagline { font-size: 0.9em; margin-bottom: 36px; letter-spacing: 0.2em; }
   .landing-btn     { padding: 14px 40px; }
+  .landing-content { padding: 48px 40px; }
 }
 
 /* ===== ログイン戻るボタン ===== */
