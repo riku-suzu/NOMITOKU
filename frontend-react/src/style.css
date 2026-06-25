@@ -452,7 +452,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(8, 3, 0, 0.58);
+  background: rgba(8, 3, 0, 0.72);
   z-index: 6;
   pointer-events: none;
 }
