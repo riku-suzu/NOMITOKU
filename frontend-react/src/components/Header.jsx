@@ -13,7 +13,7 @@ function Header() {
     localStorage.removeItem('token')
     localStorage.removeItem('nickname')
     setDir(-1)
-    navigate('/')
+    navigate('/nearby')
   }
 
   return (

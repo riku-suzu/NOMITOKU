@@ -33,27 +33,27 @@ function NearbyPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) { navigate('/'); return }
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
-    const headers = { Authorization: `Bearer ${token}` }
+    if (token) {
+      fetch(`${API_HOST}/me`, { headers })
+        .then((r) => {
+          if (r.status === 401) localStorage.removeItem('token')
+          else return r.json()
+        })
+        .then((d) => d && localStorage.setItem('nickname', d.nickname))
 
-    fetch(`${API_HOST}/me`, { headers })
-      .then((r) => {
-        if (r.status === 401) { localStorage.removeItem('token'); navigate('/'); return null }
-        return r.json()
-      })
-      .then((d) => d && localStorage.setItem('nickname', d.nickname))
+      fetch(`${API_HOST}/me/favoritestores`, { headers })
+        .then((r) => r.json())
+        .then((data) => {
+          const raw = data.favorite ?? data
+          const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
+          favCache = ids
+          setFavoriteIds(ids)
+        })
+    }
 
-    fetch(`${API_HOST}/me/favoritestores`, { headers })
-      .then((r) => r.json())
-      .then((data) => {
-        const raw = data.favorite ?? data
-        const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
-        favCache = ids
-        setFavoriteIds(ids)
-      })
-
-    if (storeCache !== null) return
+    if (storeCache !== null) { setLoading(false); return }
 
     if (!navigator.geolocation) {
       setGeoError('この端末では位置情報が使えません')
@@ -65,7 +65,7 @@ function NearbyPage() {
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords
         setLoadingPhase('fetch')
-        fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`, { headers })
+        fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`, {})
           .then((r) => {
             if (!r.ok) throw new Error(`HTTP ${r.status}`)
             return r.json()

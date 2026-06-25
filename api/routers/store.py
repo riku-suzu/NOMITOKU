@@ -40,7 +40,6 @@ def _fmt_dist(m):
 def get_nearby_stores(
     lat: float,
     lng: float,
-    current_user: dict = Depends(get_current_user),
 ):
     api_key = os.environ.get("GOOGLE_PLACES_API_KEY", "")
     if not api_key:
@@ -112,16 +111,14 @@ def get_nearby_stores(
 @router.get("/stores")
 def list_stores(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user),
 ):
-    return store_crud.get_multiple_stores(db, current_user.get("id"))
+    return store_crud.get_multiple_stores(db, user_id=None)
 
 
 @router.get("/store/{store_id}")
 def get_store(
     store_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user),
 ):
     store = store_crud.get_store(db, store_id=store_id)
     if store is None:

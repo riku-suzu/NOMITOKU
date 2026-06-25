@@ -17,22 +17,20 @@ function ShopDetailPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) { navigate('/'); return }
 
-    const headers = { Authorization: `Bearer ${token}` }
-
-    // navigation state に store がなければ DB から取得（直接URL アクセス時）
     if (!location.state?.store) {
-      fetch(`${API_HOST}/store/${storeId}`, { headers }).then((r) => r.json()).then((d) => setStore(d))
+      fetch(`${API_HOST}/store/${storeId}`).then((r) => r.json()).then((d) => setStore(d))
     }
 
-    fetch(`${API_HOST}/me/favoritestores`, { headers })
-      .then((r) => r.json())
-      .then((data) => {
-        const raw = data.favorite ?? data
-        const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
-        setIsFavorite(ids.includes(Number(storeId)))
-      })
+    if (token) {
+      fetch(`${API_HOST}/me/favoritestores`, { headers: { Authorization: `Bearer ${token}` } })
+        .then((r) => r.json())
+        .then((data) => {
+          const raw = data.favorite ?? data
+          const ids = Array.isArray(raw) ? raw : JSON.parse(raw)
+          setIsFavorite(ids.includes(Number(storeId)))
+        })
+    }
   }, [storeId])
 
   const handleToggleFavorite = () => {
@@ -70,12 +68,18 @@ function ShopDetailPage() {
               <h2 className="detail-name">{store.store_name}</h2>
               <p className="detail-dist">📍 {store.distance}</p>
             </div>
-            <button
-              onClick={handleToggleFavorite}
-              className={`btn-fav${isFavorite ? ' btn-fav--on' : ''}`}
-            >
-              {favLoading ? '登録中...' : isFavorite ? '♥ お気に入り済み' : '♡ お気に入り'}
-            </button>
+            {localStorage.getItem('token') ? (
+              <button
+                onClick={handleToggleFavorite}
+                className={`btn-fav${isFavorite ? ' btn-fav--on' : ''}`}
+              >
+                {favLoading ? '登録中...' : isFavorite ? '♥ お気に入り済み' : '♡ お気に入り'}
+              </button>
+            ) : (
+              <button onClick={() => navigate('/login')} className="btn-fav">
+                ♡ お気に入り
+              </button>
+            )}
           </div>
 
           <hr className="detail-rule" />

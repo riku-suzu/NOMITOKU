@@ -1,16 +1,5 @@
 version: '3'
 services:
-  frontend:
-    image: myj-fastapi-web-app-frontend
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    volumes:
-      - ./frontend:/web
-    ports:
-      - 3000:3000 # ホストマシンのポート3000を、docker内のポート3000に接続する
-    environment:
-      TZ: Asia/Tokyo # タイムゾーンを日本時間に設定
   frontend-react:
     image: myj-fastapi-web-app-frontend-react
     build:

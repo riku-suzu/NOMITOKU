@@ -75,11 +75,12 @@ function AnimatedRoutes() {
     <DirectionCtx.Provider value={{ dir, setDir: setManualDir }}>
       <AnimatePresence mode="wait" custom={dir} onExitComplete={() => setManualDir(1)}>
         <Routes location={location} key={location.key}>
-          <Route path="/" element={<IndexPage />} />
+          <Route path="/" element={<Navigate to="/nearby" replace />} />
+          <Route path="/login" element={<IndexPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/nearby" element={<NearbyPage />} />
           <Route path="/shop/:storeId" element={<ShopDetailPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/nearby" replace />} />
         </Routes>
       </AnimatePresence>
     </DirectionCtx.Provider>

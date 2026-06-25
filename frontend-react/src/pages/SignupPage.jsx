@@ -76,7 +76,7 @@ function SignupPage() {
             <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
             <p className="signup-link">
               すでにアカウントをお持ちの方は{' '}
-              <button onClick={() => { setDir(-1); navigate('/') }} className="btn-text">ログイン</button>
+              <button onClick={() => { setDir(-1); navigate('/login') }} className="btn-text">ログイン</button>
             </p>
           </div>
         )}
