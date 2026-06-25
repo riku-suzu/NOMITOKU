@@ -416,147 +416,95 @@ body {
 }
 
 
-/* ===== 襖トップ画面 ===== */
-.noren-screen {
+/* ===== ランディング画面 ===== */
+.landing-screen {
   position: fixed;
   inset: 0;
   z-index: 200;
   overflow: hidden;
   display: flex;
-}
-
-.noren-panel {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  backface-visibility: hidden;
-}
-
-/* 左パネル（クリーム地 + コンテンツ） */
-.noren-panel--left {
-  left: 0;
-  background: linear-gradient(160deg, #F8F1DF 0%, #EEE3C8 60%, #E6D8B2 100%);
-  border-top: 10px solid #6B4020;
-  border-bottom: 10px solid #6B4020;
-  border-left: 10px solid #6B4020;
-  border-right: 2px solid #7A5030;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.28);
-  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 右パネル（居酒屋写真） */
-.noren-panel--right {
-  right: 0;
-  background-color: #1A0800;
+/* 居酒屋背景 */
+.landing-bg {
+  position: absolute;
+  inset: 0;
   background-image: url('/izakaya.png');
   background-size: cover;
   background-position: center;
-  border-top: 10px solid #6B4020;
-  border-bottom: 10px solid #6B4020;
-  border-right: 10px solid #6B4020;
-  border-left: 2px solid #7A5030;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.28);
+  transform-origin: center center;
 }
 
-/* 内枠 */
-.noren-panel--left::before {
+/* 暗めのオーバーレイ（文字読みやすくする） */
+.landing-screen::before {
   content: '';
   position: absolute;
-  inset: 18px;
-  border: 1.5px solid rgba(92, 58, 26, 0.22);
-  pointer-events: none;
-}
-
-.noren-panel--right::after {
-  content: '';
-  position: absolute;
-  inset: 18px;
-  border: 1.5px solid rgba(200, 140, 60, 0.18);
-  pointer-events: none;
-}
-
-/* 引き手 */
-.noren-panel--left::after,
-.noren-panel--right::before {
-  content: '';
-  position: absolute;
-  top: 65%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 56px;
-  background: linear-gradient(to right, #7A5020, #A87840, #7A5020);
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.38);
-  z-index: 2;
-}
-
-.noren-panel--left::after   { right: 12px; }
-.noren-panel--right::before { left: 12px; }
-
-/* 左パネル内コンテンツ */
-.noren-content-inner {
-  position: relative;
+  inset: 0;
+  background: rgba(10, 4, 0, 0.52);
   z-index: 5;
+  pointer-events: none;
+}
+
+/* コンテンツ */
+.landing-content {
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 52px;
+  padding: 0 24px;
 }
 
-.noren-title {
+.landing-title {
   margin: 0 0 14px;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
-  font-size: 4.8em;
+  font-size: 6em;
   font-weight: 700;
-  color: #7C1020;
+  color: #FFE8C0;
   letter-spacing: 0.4em;
   line-height: 1.1;
-  text-shadow:
-    1px 1px 0 #5A0A18,
-    2px 2px 0 rgba(80, 5, 15, 0.3),
-    3px 3px 8px rgba(0,0,0,0.12);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.6), 0 0 60px rgba(255,160,40,0.25);
 }
 
-.noren-tagline {
-  margin: 0 0 40px;
-  font-size: 0.78em;
-  color: #7A5030;
-  letter-spacing: 0.3em;
+.landing-tagline {
+  margin: 0 0 44px;
+  font-size: 0.85em;
+  color: rgba(255, 230, 180, 0.85);
+  letter-spacing: 0.32em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
 }
 
-.noren-btn {
-  padding: 14px 44px;
+.landing-btn {
+  padding: 15px 52px;
   background: #C41E3A;
   color: #FFE066;
   border: none;
   border-radius: 4px;
-  font-size: 1em;
+  font-size: 1.05em;
   font-weight: bold;
   letter-spacing: 0.15em;
   cursor: pointer;
-  box-shadow: 0 3px 12px rgba(196, 30, 58, 0.4);
+  box-shadow: 0 4px 20px rgba(196, 30, 58, 0.55);
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
-.noren-btn:hover {
+.landing-btn:hover {
   background: #A8162F;
-  transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(196, 30, 58, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(196, 30, 58, 0.6);
 }
 
-.noren-btn:active {
+.landing-btn:active {
   transform: scale(0.97);
 }
 
 @media (max-width: 480px) {
-  .noren-title   { font-size: 3.2em; letter-spacing: 0.3em; }
-  .noren-tagline { font-size: 0.72em; letter-spacing: 0.2em; margin-bottom: 30px; }
-  .noren-btn     { padding: 13px 36px; }
-  .noren-content-inner { padding: 0 28px; }
+  .landing-title   { font-size: 3.8em; letter-spacing: 0.3em; }
+  .landing-tagline { font-size: 0.78em; margin-bottom: 36px; }
+  .landing-btn     { padding: 14px 40px; }
 }
 
 /* ===== ログイン戻るボタン ===== */
