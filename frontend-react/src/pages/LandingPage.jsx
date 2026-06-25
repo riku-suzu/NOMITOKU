@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useDir } from '../context/DirectionCtx'
+import { pageVariants, pageTransition } from '../utils/motion'
 
 const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
 
@@ -12,6 +14,7 @@ function LandingPage() {
   const [favoriteIds, setFavoriteIds] = useState([])
   const [geoError, setGeoError] = useState(null)
   const navigate = useNavigate()
+  const { dir } = useDir()
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -56,13 +59,15 @@ function LandingPage() {
   const otherStores    = stores.filter(s => !favoriteIds.includes(s.store_id))
 
   return (
-    <div className="landing-screen">
-      <motion.div
-        className="landing-bg"
-        animate={view !== 'landing' ? { scale: 1.08 } : { scale: 1 }}
-        transition={{ duration: 2.2, ease: [0.25, 0.1, 0.1, 1] }}
-      />
-
+    <motion.div
+      className="photo-page"
+      custom={dir}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
       <AnimatePresence mode="wait">
 
         {view === 'landing' && (
@@ -71,7 +76,7 @@ function LandingPage() {
             className="landing-content"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.3 }}
           >
             <h1 className="landing-title">ノミトク</h1>
             <p className="landing-tagline">今夜のお得、ここにある</p>
@@ -90,7 +95,7 @@ function LandingPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="loading-spinner loading-spinner--light" />
+            <div className="loading-spinner--light" />
             <p className="loading-text--light">お得を探しています</p>
           </motion.div>
         )}
@@ -99,16 +104,13 @@ function LandingPage() {
           <motion.div
             key="list"
             className="store-overlay"
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <div className="store-overlay-header">
               <span className="store-overlay-logo">ノミトク</span>
-              <button
-                className="store-overlay-login-btn"
-                onClick={() => navigate('/login')}
-              >
+              <button className="store-overlay-login-btn" onClick={() => navigate('/login')}>
                 {localStorage.getItem('token') ? 'ログアウト' : 'ログイン'}
               </button>
             </div>
@@ -120,11 +122,8 @@ function LandingPage() {
                 <>
                   <p className="store-overlay-section">★ お気に入り</p>
                   {favoriteStores.map(store => (
-                    <StoreCardDark
-                      key={store.store_id}
-                      store={store}
-                      onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
-                    />
+                    <StoreCardDark key={store.store_id} store={store}
+                      onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })} />
                   ))}
                 </>
               )}
@@ -135,11 +134,8 @@ function LandingPage() {
                   {otherStores.length === 0
                     ? <p className="store-overlay-empty">近くに該当するお店が見つかりませんでした</p>
                     : otherStores.map(store => (
-                      <StoreCardDark
-                        key={store.store_id}
-                        store={store}
-                        onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })}
-                      />
+                      <StoreCardDark key={store.store_id} store={store}
+                        onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })} />
                     ))
                   }
                 </>
@@ -149,7 +145,7 @@ function LandingPage() {
         )}
 
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
 

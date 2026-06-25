@@ -416,8 +416,34 @@ body {
 }
 
 
-/* ===== ランディング画面 ===== */
-.landing-screen {
+/* ===== 写真背景（App.jsx で永続表示） ===== */
+.app-photo-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-image: url('/izakaya.png');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(1.2) saturate(0.8);
+  pointer-events: none;
+}
+
+.app-photo-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 245, 230, 0.22);
+}
+
+.app-photo-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 3, 0, 0.72);
+}
+
+/* ===== フォトページ共通ラッパー ===== */
+.photo-page {
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -425,36 +451,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* 居酒屋背景 */
-.landing-bg {
-  position: absolute;
-  inset: 0;
-  background-image: url('/izakaya.png');
-  background-size: cover;
-  background-position: center;
-  transform-origin: center center;
-  filter: brightness(1.2) saturate(0.8);
-}
-
-/* オーバーレイ（白濁 + 文字読みやすくする） */
-.landing-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 245, 230, 0.22);
-  z-index: 5;
-  pointer-events: none;
-}
-
-.landing-screen::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(8, 3, 0, 0.72);
-  z-index: 6;
-  pointer-events: none;
 }
 
 /* コンテンツ */

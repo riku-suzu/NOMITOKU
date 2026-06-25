@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useDir } from '../context/DirectionCtx'
+import { pageVariants, pageTransition } from '../utils/motion'
 
 const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
 
@@ -11,6 +13,7 @@ function ShopDetailPage() {
   const [favLoading, setFavLoading] = useState(false)
   const navigate = useNavigate()
   const { storeId } = useParams()
+  const { dir } = useDir()
 
   useEffect(() => {
     if (!location.state?.store) {
@@ -47,13 +50,14 @@ function ShopDetailPage() {
 
   return (
     <motion.div
-      className="landing-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      className="photo-page"
+      custom={dir}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
     >
-      <div className="landing-bg" />
 
       <div className="shop-detail-overlay">
         <div className="store-overlay-header">

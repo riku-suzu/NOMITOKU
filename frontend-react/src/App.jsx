@@ -44,6 +44,12 @@ const BG_ITEMS = [
   { emoji: '🍣', top: 95, left:  7, size: 3.3, rot:  -5 },
 ]
 
+function PhotoBg() {
+  const location = useLocation()
+  if (location.pathname !== '/' && !location.pathname.startsWith('/shop/')) return null
+  return <div className="app-photo-bg" />
+}
+
 function BgDecoration() {
   const location = useLocation()
   if (location.pathname === '/' || location.pathname.startsWith('/shop/')) return null
@@ -93,6 +99,7 @@ function AnimatedRoutes() {
 function App() {
   return (
     <BrowserRouter>
+      <PhotoBg />
       <BgDecoration />
       <Header />
       <AnimatedRoutes />
