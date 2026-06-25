@@ -425,6 +425,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1200px;
 }
 
 .noren-panel {
@@ -433,6 +434,7 @@ body {
   bottom: 0;
   width: 50%;
   background: linear-gradient(160deg, #F8F1DF 0%, #EEE3C8 60%, #E6D8B2 100%);
+  backface-visibility: hidden;
 }
 
 /* 外枠（木） */

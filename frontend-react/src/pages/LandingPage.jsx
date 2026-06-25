@@ -9,20 +9,22 @@ function LandingPage() {
   const handleEnter = () => {
     if (isOpening) return
     setIsOpening(true)
-    setTimeout(() => navigate('/nearby'), 1800)
+    setTimeout(() => navigate('/nearby'), 2000)
   }
 
   return (
     <div className="noren-screen">
       <motion.div
         className="noren-panel noren-panel--left"
-        animate={isOpening ? { x: '-100%' } : { x: 0 }}
-        transition={{ duration: 1.5, delay: 0.2, ease: [0.3, 0, 0.1, 1] }}
+        style={{ transformOrigin: 'left center' }}
+        animate={isOpening ? { rotateY: -90 } : { rotateY: 0 }}
+        transition={{ duration: 1.6, delay: 0.2, ease: [0.4, 0, 0.15, 1] }}
       />
       <motion.div
         className="noren-panel noren-panel--right"
-        animate={isOpening ? { x: '100%' } : { x: 0 }}
-        transition={{ duration: 1.5, delay: 0.2, ease: [0.3, 0, 0.1, 1] }}
+        style={{ transformOrigin: 'right center' }}
+        animate={isOpening ? { rotateY: 90 } : { rotateY: 0 }}
+        transition={{ duration: 1.6, delay: 0.2, ease: [0.4, 0, 0.15, 1] }}
       />
       <motion.div
         className="noren-center"

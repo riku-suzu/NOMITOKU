@@ -118,7 +118,7 @@ function NearbyPage() {
           <div className="loading-overlay">
             <div className="loading-spinner" />
             <p className="loading-text">
-              {loadingPhase === 'fetch' ? 'あともう少しです' : 'あなたに最適なお得を\n頑張って探しています'}
+              {loadingPhase === 'fetch' ? 'お得を探しています' : 'あなたに最適なお得を\n頑張って探しています'}
             </p>
           </div>
         ) : (
