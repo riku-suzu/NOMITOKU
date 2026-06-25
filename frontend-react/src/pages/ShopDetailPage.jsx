@@ -61,9 +61,7 @@ function ShopDetailPage() {
 
       <div className="shop-detail-overlay">
         <div className="store-overlay-header">
-          <button className="store-overlay-login-btn" onClick={() => navigate(-1)}>
-            ← 戻る
-          </button>
+          <span />
           {localStorage.getItem('token') ? (
             <button
               onClick={handleToggleFavorite}
@@ -122,6 +120,11 @@ function ShopDetailPage() {
             )}
           </div>
         )}
+        <div className="shop-detail-footer">
+          <button className="shop-detail-back-btn" onClick={() => navigate(-1)}>
+            ← 一覧に戻る
+          </button>
+        </div>
       </div>
     </motion.div>
   )
