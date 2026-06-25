@@ -2,7 +2,7 @@ body {
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #FDF3E3;
+  background-color: #1A0800;
   color: #2C1810;
   min-height: 100vh;
   overflow-x: hidden;
@@ -581,7 +581,7 @@ body {
   font-weight: 700;
   color: #FFE8C0;
   letter-spacing: 0.06em;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 12px rgba(0,0,0,0.8), 0 2px 24px rgba(0,0,0,0.5);
 }
 
 .store-overlay-login-btn {
@@ -593,6 +593,8 @@ body {
   font-size: 0.82em;
   cursor: pointer;
   transition: background 0.2s;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
 .store-overlay-login-btn:hover {
@@ -608,27 +610,30 @@ body {
 .store-overlay-section {
   font-size: 0.82em;
   font-weight: bold;
-  color: #C41E3A;
+  color: #FFE8C0;
   letter-spacing: 0.1em;
   margin: 14px 0 8px;
   border-left: 3px solid #FFB700;
   padding-left: 8px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8), 0 2px 16px rgba(0,0,0,0.5);
 }
 
 .store-overlay-error {
-  color: rgba(255, 180, 180, 0.9);
+  color: rgba(255, 200, 200, 0.95);
   text-align: center;
   padding: 24px 0;
   white-space: pre-line;
   font-size: 0.9em;
   line-height: 1.7;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
 }
 
 .store-overlay-empty {
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.65);
   text-align: center;
   padding: 20px 0;
   font-size: 0.88em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
 }
 
 .store-card-dark {
@@ -699,6 +704,8 @@ body {
   font-size: 0.82em;
   cursor: pointer;
   transition: background 0.2s;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
 .shop-detail-fav:hover { background: rgba(255,255,255,0.22); }
