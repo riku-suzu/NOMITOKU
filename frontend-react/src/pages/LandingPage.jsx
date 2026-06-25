@@ -96,7 +96,7 @@ function LandingPage() {
             transition={{ duration: 0.3 }}
           >
             <div className="loading-spinner--light" />
-            <p className="loading-text--light">お得を探しています</p>
+            <p className="loading-text--light">あなたの近くのお得、ガチ探し中…🍺</p>
           </motion.div>
         )}
 
