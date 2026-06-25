@@ -465,7 +465,16 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 24px;
+  padding: 60px 80px;
+}
+
+.landing-content::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, transparent 75%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .landing-title {
@@ -481,7 +490,7 @@ body {
 
 .landing-tagline {
   margin: 0 0 44px;
-  font-size: 0.85em;
+  font-size: 1.05em;
   color: rgba(255, 230, 180, 0.85);
   letter-spacing: 0.32em;
   text-shadow: 0 1px 8px rgba(0,0,0,0.5);
