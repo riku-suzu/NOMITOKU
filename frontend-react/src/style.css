@@ -464,18 +464,6 @@ body {
   pointer-events: auto;
 }
 
-.noren-lantern {
-  font-size: 3.2em;
-  margin-bottom: 4px;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
-  animation: lanternSway 3s ease-in-out infinite;
-}
-
-@keyframes lanternSway {
-  0%, 100% { transform: rotate(-4deg); }
-  50%       { transform: rotate(4deg); }
-}
-
 .noren-title {
   margin: 0;
   font-size: 4.5em;
