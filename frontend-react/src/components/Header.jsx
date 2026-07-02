@@ -7,7 +7,8 @@ function Header() {
   const location = useLocation()
   const { setDir } = useDir()
 
-  if (location.pathname === '/' || location.pathname.startsWith('/shop/')) return null
+  const { pathname } = location
+  if (pathname === '/' || pathname.startsWith('/shop/') || pathname === '/login' || pathname === '/signup') return null
   const token = localStorage.getItem('token')
   const nickname = localStorage.getItem('nickname') || ''
 

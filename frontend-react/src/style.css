@@ -80,17 +80,18 @@ body {
   z-index: 1;
 }
 
-/* ===== ログインカード ===== */
-.login-card {
-  background: #fff;
+/* ===== 認証カード（写真背景上） ===== */
+.auth-card {
+  background: rgba(255, 250, 244, 0.95);
   border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(196, 30, 58, 0.12);
+  box-shadow: 0 4px 28px rgba(0,0,0,0.35);
   padding: 32px 28px;
-  margin: 24px auto;
-  max-width: 400px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 16px;
 }
 
-.login-card h2 {
+.auth-card-title {
   text-align: center;
   color: #C41E3A;
   font-size: 1.35em;

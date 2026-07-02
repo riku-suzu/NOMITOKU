@@ -19,31 +19,29 @@ function SignupPage() {
     if (!nickname || !email || !password) { setErrorMsg('全ての項目を入力してください'); return }
     setSubmitting(true)
     setErrorMsg('')
-
     fetch(`${API_HOST}/user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nickname, email, password }),
     })
-      .then((res) => {
+      .then(res => {
         if (res.ok) return res.json()
         if (res.status === 400) throw new Error('このメールアドレスは既に登録されています')
         throw new Error('登録に失敗しました')
       })
-      .then(() =>
-        fetch(`${API_HOST}/token`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        })
-      )
-      .then((res) => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
-      .then((data) => { localStorage.setItem('token', data.access_token); navigate('/nearby') })
-      .catch((error) => { setErrorMsg(error.message); setSubmitting(false) })
+      .then(() => fetch(`${API_HOST}/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+      }))
+      .then(res => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
+      .then(data => { localStorage.setItem('token', data.access_token); navigate('/') })
+      .catch(error => { setErrorMsg(error.message); setSubmitting(false) })
   }
 
   return (
     <motion.div
+      className="photo-page"
       custom={dir}
       variants={pageVariants}
       initial="initial"
@@ -51,36 +49,34 @@ function SignupPage() {
       exit="exit"
       transition={pageTransition}
     >
-      <div className="page-content">
-        {submitting ? (
-          <div className="loading-overlay">
-            <div className="loading-spinner" />
-            <p className="loading-text">あなたに最適なお得を<br />頑張って探しています</p>
+      {submitting ? (
+        <div className="landing-loading">
+          <div className="loading-spinner--light" />
+          <p className="loading-text--light">登録中…</p>
+        </div>
+      ) : (
+        <div className="auth-card">
+          <h2 className="auth-card-title">新規会員登録</h2>
+          {errorMsg && <p className="error-msg">{errorMsg}</p>}
+          <div className="form-group">
+            <label>ニックネーム</label>
+            <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="ニックネーム" />
           </div>
-        ) : (
-          <div className="login-card">
-            <h2>新規会員登録</h2>
-            {errorMsg && <p className="error-msg">{errorMsg}</p>}
-            <div className="form-group">
-              <label>ニックネーム</label>
-              <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="ニックネーム" />
-            </div>
-            <div className="form-group">
-              <label>メールアドレス</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
-            </div>
-            <div className="form-group">
-              <label>パスワード</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="パスワード" />
-            </div>
-            <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
-            <p className="signup-link">
-              すでにアカウントをお持ちの方は{' '}
-              <button onClick={() => { setDir(-1); navigate('/login') }} className="btn-text">ログイン</button>
-            </p>
+          <div className="form-group">
+            <label>メールアドレス</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" />
           </div>
-        )}
-      </div>
+          <div className="form-group">
+            <label>パスワード</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="パスワード" />
+          </div>
+          <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
+          <p className="signup-link">
+            すでにアカウントをお持ちの方は{' '}
+            <button onClick={() => { setDir(-1); navigate('/login') }} className="btn-text">ログイン</button>
+          </p>
+        </div>
+      )}
     </motion.div>
   )
 }

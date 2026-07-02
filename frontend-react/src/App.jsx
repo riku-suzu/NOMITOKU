@@ -45,7 +45,8 @@ const BG_ITEMS = [
 
 function PhotoBg() {
   const location = useLocation()
-  if (location.pathname !== '/' && !location.pathname.startsWith('/shop/')) return null
+  const { pathname } = location
+  if (pathname !== '/' && !pathname.startsWith('/shop/') && pathname !== '/login' && pathname !== '/signup') return null
   return <div className="app-photo-bg" />
 }
 
