@@ -1,3 +1,5 @@
+import os
+import secrets
 import typing as T
 from datetime import datetime, timedelta, timezone
 
@@ -10,8 +12,9 @@ import api.cruds.user as user_crud
 import api.extra_modules.auth.schema as auth_schemas
 from api.db import get_db
 
-# ! 本当は環境変数などから取得するべき
-SECRET_KEY = "6ae97a28c3884986c02e1160313d30c2a065bbc4b14e4f6400085dd3e8afa6ea"
+# トークンの署名鍵。本番では環境変数 SECRET_KEY に設定する。
+# 未設定のときは起動のたびに作り直す（再起動するとログインし直しになる）
+SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
 ALGORITHM = "HS256"
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
