@@ -1,164 +1,106 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useDir } from '../context/DirectionCtx'
-import { pageVariants, pageTransition } from '../utils/motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import PageShell from '../components/PageShell'
+import Hero from '../components/Hero'
+import StoreList from '../components/StoreList'
+import Toast from '../components/Toast'
+import { clearToken, fetchFavoriteIds, fetchNearbyStores, getCurrentPosition, hasToken } from '../utils/api'
+import { fade } from '../utils/motion'
 
-const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
+// 詳細から戻ったときに一覧をそのまま出すためのキャッシュ
+const cache = { stores: null, scrollY: 0 }
 
-let storeCache = null
-
-function LandingPage() {
-  const [view, setView] = useState(storeCache ? 'list' : 'landing')
-  const [stores, setStores] = useState(storeCache || [])
-  const [favoriteIds, setFavoriteIds] = useState([])
-  const [geoError, setGeoError] = useState(null)
-  const navigate = useNavigate()
-  const { dir } = useDir()
-
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) return
-    fetch(`${API_HOST}/me/favoritestores`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => {
-        const raw = data.favorite ?? data
-        setFavoriteIds(Array.isArray(raw) ? raw : JSON.parse(raw))
-      })
-      .catch(() => {})
-  }, [])
-
-  const handleEnter = () => {
-    if (view !== 'landing') return
-    setView('loading')
-
-    if (!navigator.geolocation) {
-      setGeoError('この端末では位置情報が使えません')
-      setView('list')
-      return
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude: lat, longitude: lng } }) => {
-        fetch(`${API_HOST}/stores/nearby?lat=${lat}&lng=${lng}`)
-          .then(r => { if (!r.ok) throw new Error(); return r.json() })
-          .then(data => { storeCache = data; setStores(data); setView('list') })
-          .catch(() => { setGeoError('お店情報の取得に失敗しました'); setView('list') })
-      },
-      (err) => {
-        setGeoError(err.code === 1
-          ? '位置情報が許可されていません。\nSafari設定 → プライバシーとセキュリティ → 位置情報サービスをオンにしてください。'
-          : '位置情報を取得できませんでした。')
-        setView('list')
-      },
-      { timeout: 15000, enableHighAccuracy: false }
-    )
-  }
-
-  const favoriteStores = stores.filter(s => favoriteIds.includes(s.store_id))
-  const otherStores    = stores.filter(s => !favoriteIds.includes(s.store_id))
-
-  return (
-    <motion.div
-      className="photo-page"
-      custom={dir}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={pageTransition}
-    >
-      <AnimatePresence mode="wait">
-
-        {view === 'landing' && (
-          <motion.div
-            key="intro"
-            className="landing-content"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h1 className="landing-title">ノミトク</h1>
-            <p className="landing-tagline">今夜のお得、ここにある</p>
-            <button className="landing-btn" onClick={handleEnter}>
-              お得を探す 🍺
-            </button>
-          </motion.div>
-        )}
-
-        {view === 'loading' && (
-          <motion.div
-            key="loading"
-            className="landing-loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="loading-spinner--light" />
-            <p className="loading-text--light">あなたの近くのお得、ガチ探し中…🍺</p>
-          </motion.div>
-        )}
-
-        {view === 'list' && (
-          <motion.div
-            key="list"
-            className="store-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="store-overlay-header">
-              <span className="store-overlay-logo">ノミトク</span>
-              <button className="store-overlay-login-btn" onClick={() => navigate('/login')}>
-                {localStorage.getItem('token') ? 'ログアウト' : 'ログイン'}
-              </button>
-            </div>
-
-            <div className="store-overlay-body">
-              {geoError && <p className="store-overlay-error">{geoError}</p>}
-
-              {favoriteStores.length > 0 && (
-                <>
-                  <p className="store-overlay-section">★ お気に入り</p>
-                  {favoriteStores.map(store => (
-                    <StoreCardDark key={store.store_id} store={store}
-                      onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })} />
-                  ))}
-                </>
-              )}
-
-              {!geoError && (
-                <>
-                  <p className="store-overlay-section">近くの今のお得</p>
-                  {otherStores.length === 0
-                    ? <p className="store-overlay-empty">近くに該当するお店が見つかりませんでした</p>
-                    : otherStores.map(store => (
-                      <StoreCardDark key={store.store_id} store={store}
-                        onClick={() => navigate(`/shop/${store.store_id}`, { state: { store } })} />
-                    ))
-                  }
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-
-      </AnimatePresence>
-    </motion.div>
-  )
+const GEO_ERRORS = {
+  denied: {
+    icon: 'locate',
+    title: '位置情報がオフになっています',
+    body: (
+      <>
+        近くのお店を探すには位置情報の許可が必要です。<br />
+        iPhone：設定 → プライバシーとセキュリティ → 位置情報サービス → Safari を「使用中のみ」に
+      </>
+    ),
+  },
+  position: { icon: 'locate', title: '現在地を取得できませんでした', body: '電波の良い場所で、もう一度お試しください。' },
+  network: { icon: 'alert', title: 'お店の情報を取得できませんでした', body: '通信状況を確認して、もう一度お試しください。' },
 }
 
-function StoreCardDark({ store, onClick }) {
+function LandingPage() {
+  const [view, setView] = useState(cache.stores ? 'list' : 'hero')
+  const [status, setStatus] = useState(cache.stores ? 'ready' : 'idle')
+  const [stores, setStores] = useState(cache.stores || [])
+  const [error, setError] = useState(null)
+  const [favoriteIds, setFavoriteIds] = useState([])
+  const [isLoggedIn, setIsLoggedIn] = useState(hasToken)
+  const [toast, setToast] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isLoggedIn) return
+    fetchFavoriteIds().then(setFavoriteIds).catch(() => {})
+  }, [isLoggedIn])
+
+  // 一覧に戻ってきたら前のスクロール位置へ（一覧のキャッシュがあるときは最初から一覧を出している）
+  useEffect(() => {
+    if (cache.stores && cache.scrollY) {
+      requestAnimationFrame(() => window.scrollTo(0, cache.scrollY))
+    }
+  }, [])
+
+  const search = useCallback(() => {
+    setView('list')
+    setStatus('loading')
+    setError(null)
+    window.scrollTo(0, 0)
+
+    getCurrentPosition()
+      .catch(err => { throw { kind: err.code === 1 ? 'denied' : 'position' } })
+      .then(({ lat, lng }) => fetchNearbyStores(lat, lng).catch(() => { throw { kind: 'network' } }))
+      .then(data => {
+        cache.stores = data
+        cache.scrollY = 0
+        setStores(data)
+        setStatus('ready')
+      })
+      .catch(err => {
+        setError(GEO_ERRORS[err.kind] || GEO_ERRORS.network)
+        setStatus('error')
+      })
+  }, [])
+
+  const handleAuth = () => {
+    if (!isLoggedIn) { navigate('/login'); return }
+    clearToken()
+    setIsLoggedIn(false)
+    setFavoriteIds([])
+    setToast('ログアウトしました')
+  }
+
   return (
-    <div className="store-card-dark" onClick={onClick}>
-      <div className="store-card-dark-header">
-        <span className="store-card-dark-name">{store.store_name}</span>
-        <span className="store-card-dark-dist">📍 {store.distance}</span>
-      </div>
-      <div className="store-card-dark-deal">{store.coupon}</div>
-      {store.note && <p className="store-card-dark-note">{store.note}</p>}
-    </div>
+    <PageShell keepScroll>
+      <AnimatePresence mode="wait">
+        {view === 'hero' ? (
+          <motion.div key="hero" variants={fade} initial="initial" animate="animate" exit="exit">
+            <Hero isLoggedIn={isLoggedIn} onStart={search} onLogin={() => navigate('/login')} />
+          </motion.div>
+        ) : (
+          <motion.div key="list" variants={fade} initial="initial" animate="animate">
+            <StoreList
+              status={status}
+              stores={stores}
+              error={error}
+              favoriteIds={favoriteIds}
+              isLoggedIn={isLoggedIn}
+              onRetry={search}
+              onAuth={handleAuth}
+              onOpenStore={() => { cache.scrollY = window.scrollY }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <Toast message={toast} onDone={() => setToast(null)} />
+    </PageShell>
   )
 }
 

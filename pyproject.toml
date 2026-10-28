@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "demo-app"
+name = "nomitoku"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+description = "ノミトクの API（FastAPI）"
+authors = ["riku-suzu"]
 readme = "README.md"
-packages = [{ include = "demo_app" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -16,13 +15,6 @@ passlib = { extras = ["bcrypt"], version = "^1.7.4" }
 python-jose = { extras = ["cryptography"], version = "^3.3.0" }
 python-multipart = "^0.0.9"
 requests = "^2.31.0"
-pillow = "^10.2.0"
-pillow-heif = "^0.15.0"
-
-
-[tool.poetry.group.dev.dependencies]
-faker = "^21.0.0"
-httpx = "^0.26.0"
 
 [build-system]
 requires = ["poetry-core"]
