@@ -8,6 +8,15 @@ from api.extra_modules.auth.core import get_current_user
 router = APIRouter()
 
 
+def to_public_user(user: dict) -> dict:
+    """画面に返してよい項目だけにする（パスワードのハッシュは返さない）"""
+    return {
+        "id": user.get("id"),
+        "email": user.get("email"),
+        "nickname": user.get("nickname"),
+    }
+
+
 @router.post("/user")
 def create_user(
     user: dict = Body(),
@@ -19,18 +28,12 @@ def create_user(
         raise HTTPException(status_code=400, detail="Email already registered")
 
     new_db_user = user_crud.create_user(db, user)
-    return_user = {
-        "id": new_db_user.get("id"),
-        "email": new_db_user.get("email"),
-        "nickname": new_db_user.get("nickname"),
-    }
-
-    return return_user
+    return to_public_user(new_db_user)
 
 
 @router.get("/me")
-def get_me(current_user=Depends(get_current_user)):
-    return current_user
+def get_me(current_user: dict = Depends(get_current_user)):
+    return to_public_user(current_user)
 
 
 
