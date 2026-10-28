@@ -13,8 +13,6 @@ def create_user(
     user: dict = Body(),
     db: Session = Depends(get_db),
 ):
-    print(f"受けたデータ:\n{user}")
-
     db_user = user_crud.get_user_by_email(db, email=user.get("email"))
     # すでに登録されているメールアドレスの場合
     if db_user:
@@ -27,7 +25,6 @@ def create_user(
         "nickname": new_db_user.get("nickname"),
     }
 
-    print(f"返すデータ:\n{return_user}")
     return return_user
 
 
@@ -45,14 +42,8 @@ def get_favorite_stores(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    # print(f"[rikuuu]current_user:  {current_user['id']}")
     favorite_stores = user_crud.get_favorite_stores_by_user(db,current_user['id'])
-    print(f"[rikuuuu]favorite_stores:  {get_favorite_stores}")
     if  favorite_stores is None:
         raise HTTPException(status_code=404, detail="favorite_stores not found")
-
-    # # 他のユーザーのタスクを取得しようとした場合
-    # if task.get("user_id") != current_user.get("id"):
-    #     raise HTTPException(status_code=403, detail="Forbidden")
 
     return favorite_stores

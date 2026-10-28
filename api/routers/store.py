@@ -1,3 +1,4 @@
+import logging
 import math
 import os
 from datetime import datetime
@@ -11,6 +12,7 @@ from api.db import get_db
 from api.extra_modules.auth.core import get_current_user
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 DEMO_COUPONS = [
     "生ビール半額",
@@ -57,7 +59,7 @@ def get_store_coupons(store_id: int):
     try:
         return hotpepper.fetch_coupons(hotpepper.to_shop_id(store_id))
     except Exception as e:
-        print(f"[Hot Pepper] coupon fetch failed: {e}")
+        logger.warning("[Hot Pepper] coupon fetch failed: %s", e)
         raise HTTPException(status_code=502, detail="Failed to fetch coupons")
 
 
@@ -70,11 +72,11 @@ def get_nearby_stores(
         try:
             return _nearby_from_hotpepper(lat, lng)
         except Exception as e:
-            print(f"[Hot Pepper] search failed, falling back to Google Places: {e}")
+            logger.warning("[Hot Pepper] search failed, falling back to Google Places: %s", e)
 
     api_key = os.environ.get("GOOGLE_PLACES_API_KEY", "")
     if not api_key:
-        print("[Places API] GOOGLE_PLACES_API_KEY is not set")
+        logger.warning("[Places API] GOOGLE_PLACES_API_KEY is not set")
         raise HTTPException(status_code=503, detail="Places API key is not configured")
     url = "https://places.googleapis.com/v1/places:searchNearby"
     headers = {
@@ -97,10 +99,10 @@ def get_nearby_stores(
     try:
         resp = req.post(url, json=body, headers=headers, timeout=15)
         resp_json = resp.json()
-        print(f"[Places API] status={resp.status_code} body={resp_json}")
+        logger.debug("[Places API] status=%s body=%s", resp.status_code, resp_json)
         places = resp_json.get("places", [])
     except Exception as e:
-        print(f"[Places API] exception: {e}")
+        logger.warning("[Places API] exception: %s", e)
         places = []
 
     stores = []
@@ -158,7 +160,7 @@ def get_store(
             if shop:
                 return hotpepper.to_store(shop)
         except Exception as e:
-            print(f"[Hot Pepper] shop fetch failed: {e}")
+            logger.warning("[Hot Pepper] shop fetch failed: %s", e)
 
     store = store_crud.get_store(db, store_id=store_id)
     if store is None:

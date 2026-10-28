@@ -26,11 +26,9 @@ def create_user(db: Session, user: dict) -> dict:
         "password": get_password_hash(user.get("password")),
     }
 
-    print(f"SQL: {sql}")
     db.execute(sql, params)
     db.commit()
     new_user = get_user_by_email(db, user.get("email"))
-    print(f"DB操作の結果: {new_user}")
 
     # ここで users_favorite_stores にも空データを追加
     if new_user and new_user.get("id"):
@@ -59,11 +57,9 @@ def get_user_by_email(db: Session, email: str) -> dict | None:
     )
     params = {"email": email}
 
-    print(f"SQL: {sql}\nParams: {params}")
     result = db.execute(sql, params).first()
     if result is not None:
         result = result._asdict()
-    print(f"DB操作の結果: {result}")
 
     return result
 
@@ -92,7 +88,6 @@ def get_favorite_stores_by_user(
     )
     params = {"id": user_id}
 
-    print(f"rikurikuSQL: {sql}\nParams: {params}")
     result = db.execute(sql, params).first()
 
     if result is None:
@@ -101,7 +96,6 @@ def get_favorite_stores_by_user(
     else:
         result = result._asdict()
 
-    print(f"rikurikuDB操作の結果: {result}")
     return result
 
 
