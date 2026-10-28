@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import PageShell from '../components/PageShell'
 import Icon from '../components/Icon'
 import StoreTags from '../components/StoreTags'
 import CouponList from '../components/CouponList'
 import EmptyState from '../components/EmptyState'
+import FavoriteButton from '../components/FavoriteButton'
+import HotpepperCredit from '../components/HotpepperCredit'
 import { Skeleton } from '../components/Skeleton'
 import { fetchFavoriteIds, fetchStore, hasToken, updateFavoriteIds } from '../utils/api'
 import { stagger, rise, tap } from '../utils/motion'
@@ -52,25 +54,7 @@ function ShopDetailPage() {
               className="detail-hero-img"
             />
           : <div className="detail-hero-img detail-hero-img--empty"><Icon name="beer" size={40} /></div>}
-        <motion.button
-          className={`fav-btn${isFavorite ? ' fav-btn--on' : ''}`}
-          whileTap={{ scale: 0.88 }}
-          onClick={toggleFavorite}
-          aria-pressed={isFavorite}
-          aria-label={isFavorite ? 'お気に入りから外す' : 'お気に入りに追加'}
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={isFavorite ? 'on' : 'off'}
-              initial={{ scale: 0.4, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 18 } }}
-              exit={{ scale: 0.4, opacity: 0, transition: { duration: 0.1 } }}
-              style={{ display: 'flex' }}
-            >
-              <Icon name="heart" size={22} filled={isFavorite} />
-            </motion.span>
-          </AnimatePresence>
-        </motion.button>
+        <FavoriteButton isFavorite={isFavorite} onClick={toggleFavorite} />
       </div>
 
       <main className="container detail-body">
@@ -122,13 +106,7 @@ function ShopDetailPage() {
               )}
             </motion.section>
 
-            {store.source === 'hotpepper' && (
-              <p className="credit">
-                <a href="http://webservice.recruit.co.jp/" target="_blank" rel="noopener noreferrer">
-                  Powered by ホットペッパーグルメ Webサービス
-                </a>
-              </p>
-            )}
+            {store.source === 'hotpepper' && <HotpepperCredit />}
           </motion.div>
         )}
       </main>

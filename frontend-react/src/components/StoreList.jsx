@@ -4,6 +4,7 @@ import AppBar from './AppBar'
 import Icon from './Icon'
 import StoreCard from './StoreCard'
 import EmptyState from './EmptyState'
+import HotpepperCredit from './HotpepperCredit'
 import { StoreCardSkeleton } from './Skeleton'
 import { useCoupons } from '../hooks/useCoupons'
 import { stagger, fade, tap } from '../utils/motion'
@@ -24,15 +25,21 @@ function StoreList({ status, stores, error, favoriteIds, isLoggedIn, onRetry, on
   const others = visible.filter(s => !favoriteIds.includes(s.store_id))
   const farthest = stores.at(-1)?.distance
 
-  const renderCards = (list) => list.map(store => (
-    <StoreCard
-      key={store.store_id}
-      store={store}
-      coupons={store.source === 'hotpepper' ? coupons[store.store_id] : EMPTY}
-      isFavorite={favoriteIds.includes(store.store_id)}
-      onOpen={onOpenStore}
-    />
-  ))
+  const renderList = (list) => (
+    <motion.ul className="store-list" variants={stagger(0.04)} initial="initial" animate="animate">
+      <AnimatePresence>
+        {list.map(store => (
+          <StoreCard
+            key={store.store_id}
+            store={store}
+            coupons={store.source === 'hotpepper' ? coupons[store.store_id] : EMPTY}
+            isFavorite={favoriteIds.includes(store.store_id)}
+            onOpen={onOpenStore}
+          />
+        ))}
+      </AnimatePresence>
+    </motion.ul>
+  )
 
   return (
     <div className="list-page">
@@ -68,24 +75,12 @@ function StoreList({ status, stores, error, favoriteIds, isLoggedIn, onRetry, on
         </div>
 
         {status === 'ready' && stores.length > 0 && (
-          <div className="filter-bar">
-            <div className="segmented" role="tablist" aria-label="表示するお店">
-              <button role="tab" aria-selected={filter === 'all'} onClick={() => setFilter('all')}>
-                すべて<span className="count">{stores.length}</span>
-              </button>
-              <button role="tab" aria-selected={filter === 'coupon'} onClick={() => setFilter('coupon')}>
-                クーポンあり<span className="count">{withCoupon.length}</span>
-              </button>
-            </div>
-            <AnimatePresence>
-              {checking && (
-                <motion.p className="checking" variants={fade} initial="initial" animate="animate" exit="exit">
-                  クーポン確認中 {checked}/{hpStores.length}
-                  <span className="progress"><span style={{ width: `${(checked / hpStores.length) * 100}%` }} /></span>
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
+          <FilterBar
+            filter={filter}
+            onChange={setFilter}
+            counts={{ all: stores.length, coupon: withCoupon.length }}
+            progress={checking ? { done: checked, total: hpStores.length } : null}
+          />
         )}
 
         {status === 'loading' && (
@@ -115,17 +110,13 @@ function StoreList({ status, stores, error, favoriteIds, isLoggedIn, onRetry, on
             {favorites.length > 0 && (
               <section className="list-section">
                 <h2 className="section-label"><Icon name="heart" size={14} filled />お気に入り</h2>
-                <motion.ul className="store-list" variants={stagger(0.04)} initial="initial" animate="animate">
-                  <AnimatePresence>{renderCards(favorites)}</AnimatePresence>
-                </motion.ul>
+                {renderList(favorites)}
               </section>
             )}
 
             <section className="list-section">
               {favorites.length > 0 && <h2 className="section-label">近くのお店</h2>}
-              <motion.ul className="store-list" variants={stagger(0.04)} initial="initial" animate="animate">
-                <AnimatePresence>{renderCards(others)}</AnimatePresence>
-              </motion.ul>
+              {renderList(others)}
               {filter === 'coupon' && withCoupon.length === 0 && (
                 <EmptyState icon="ticket" title={checking ? 'クーポンを確認しています' : 'クーポンのあるお店がありません'}>
                   {checking ? '見つかり次第ここに表示されます。' : '「すべて」に戻すと、ほかのお店も見られます。'}
@@ -133,14 +124,34 @@ function StoreList({ status, stores, error, favoriteIds, isLoggedIn, onRetry, on
               )}
             </section>
 
-            <p className="credit">
-              <a href="http://webservice.recruit.co.jp/" target="_blank" rel="noopener noreferrer">
-                Powered by ホットペッパーグルメ Webサービス
-              </a>
-            </p>
+            <HotpepperCredit />
           </LayoutGroup>
         )}
       </main>
+    </div>
+  )
+}
+
+// 「すべて / クーポンあり」の切り替えと、クーポン確認の進み具合
+function FilterBar({ filter, onChange, counts, progress }) {
+  return (
+    <div className="filter-bar">
+      <div className="segmented" role="tablist" aria-label="表示するお店">
+        <button role="tab" aria-selected={filter === 'all'} onClick={() => onChange('all')}>
+          すべて<span className="count">{counts.all}</span>
+        </button>
+        <button role="tab" aria-selected={filter === 'coupon'} onClick={() => onChange('coupon')}>
+          クーポンあり<span className="count">{counts.coupon}</span>
+        </button>
+      </div>
+      <AnimatePresence>
+        {progress && (
+          <motion.p className="checking" variants={fade} initial="initial" animate="animate" exit="exit">
+            クーポン確認中 {progress.done}/{progress.total}
+            <span className="progress"><span style={{ width: `${(progress.done / progress.total) * 100}%` }} /></span>
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
