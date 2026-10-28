@@ -2,10 +2,9 @@
 export const ease = {
   out: [0.22, 1, 0.36, 1],     // 入場（素早く出て、ゆっくり止まる）
   in: [0.64, 0, 0.78, 0],      // 退場
-  inOut: [0.65, 0, 0.35, 1],
 }
 
-export const duration = {
+const duration = {
   fast: 0.2,
   base: 0.35,
   slow: 0.7,
@@ -60,11 +59,6 @@ export const heroTitle = {
   exit: { opacity: 0, transition: { duration: duration.fast, ease: ease.in } },
 }
 
-// ===== カード類 =====
-export const popIn = {
-  initial: { opacity: 0, scale: 0.97 },
-  animate: { opacity: 1, scale: 1, transition: { duration: duration.base, ease: ease.out } },
-  exit: { opacity: 0, scale: 0.98, transition: { duration: duration.fast, ease: ease.in } },
-}
-
+// ===== ボタン =====
+// 押したときに少し縮む
 export const tap = { scale: 0.98 }

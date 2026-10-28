@@ -209,7 +209,6 @@ a { color: inherit; }
 
 .appbar-slot { display: flex; align-items: center; min-width: 44px; padding-left: 8px; }
 .appbar-slot--right { margin-left: auto; justify-content: flex-end; padding: 0 8px 0 0; }
-.appbar-title { font-weight: 700; }
 
 /* =========================================================
    トップ（ヒーロー）

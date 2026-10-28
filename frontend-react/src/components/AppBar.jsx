@@ -1,9 +1,8 @@
-// 画面上部に固定されるバー（左・中央・右の3枠）
-function AppBar({ left, title, right, transparent = false }) {
+// 画面上部に固定されるバー（左・右の2枠）
+function AppBar({ left, right }) {
   return (
-    <header className={`appbar${transparent ? ' appbar--transparent' : ''}`}>
+    <header className="appbar">
       <div className="appbar-slot">{left}</div>
-      {title && <div className="appbar-title">{title}</div>}
       <div className="appbar-slot appbar-slot--right">{right}</div>
     </header>
   )
