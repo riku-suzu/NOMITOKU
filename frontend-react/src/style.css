@@ -28,6 +28,7 @@
   /* 形 */
   --radius: 12px;
   --radius-lg: 18px;
+  --radius-pill: 999px;
   --shadow-sm: 0 1px 2px rgba(34, 27, 22, 0.06);
   --shadow: 0 1px 2px rgba(34, 27, 22, 0.05), 0 4px 16px rgba(34, 27, 22, 0.06);
   --shadow-lg: 0 8px 32px rgba(34, 27, 22, 0.14);
@@ -36,6 +37,9 @@
   --container: 560px;
   --gutter: 16px;
   --appbar-h: 56px;
+
+  /* 上下のバーのすりガラス */
+  --glass-blur: saturate(1.6) blur(14px);
 
   /* モーション（JS側は utils/motion.js） */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -129,7 +133,7 @@ a { color: inherit; }
   min-height: 44px;
   padding: 0 18px;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -202,8 +206,8 @@ a { color: inherit; }
   height: calc(var(--appbar-h) + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) max(8px, calc((100% - var(--container)) / 2 + 8px)) 0;
   background: color-mix(in srgb, var(--bg) 82%, transparent);
-  -webkit-backdrop-filter: saturate(1.6) blur(14px);
-  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
 }
 
@@ -213,14 +217,20 @@ a { color: inherit; }
 /* =========================================================
    トップ（ヒーロー）
    ========================================================= */
+/* 写真の上に重ねるので、ライト・ダークに関係なく同じ色を使う */
 .hero {
+  --hero-ink: #FFF7EC;
+  --hero-gold: #F3C97A;
+  --hero-accent: #D12E44;
+  --hero-accent-hover: #B8243A;
+
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   min-height: 100svh;
   overflow: hidden;
-  color: #FFF7EC;
+  color: var(--hero-ink);
   background: #120B07;
 }
 
@@ -253,11 +263,11 @@ a { color: inherit; }
   min-height: 40px;
   padding: 0 16px;
   border: 1px solid rgba(255, 247, 236, 0.35);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(20, 12, 8, 0.35);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  color: #FFF7EC;
+  color: var(--hero-ink);
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -276,7 +286,7 @@ a { color: inherit; }
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.24em;
-  color: #F3C97A;
+  color: var(--hero-gold);
 }
 
 .hero-title {
@@ -299,8 +309,8 @@ a { color: inherit; }
 
 .hero-actions { margin-top: 36px; }
 
-.hero .btn-primary { background: #D12E44; color: #fff; box-shadow: 0 8px 28px rgba(209, 46, 68, 0.45); }
-.hero .btn-primary:hover { background: #B8243A; }
+.hero .btn-primary { background: var(--hero-accent); color: #fff; box-shadow: 0 8px 28px rgba(209, 46, 68, 0.45); }
+.hero .btn-primary:hover { background: var(--hero-accent-hover); }
 
 .hero-note {
   margin-top: 12px;
@@ -355,7 +365,7 @@ a { color: inherit; }
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 4px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface-2);
 }
 
@@ -366,7 +376,7 @@ a { color: inherit; }
   gap: 6px;
   min-height: 38px;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   font-size: 0.9rem;
   font-weight: 700;
@@ -383,7 +393,7 @@ a { color: inherit; }
 .segmented .count {
   min-width: 22px;
   padding: 0 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--bg);
   font-size: 0.75rem;
   line-height: 20px;
@@ -405,7 +415,7 @@ a { color: inherit; }
   flex: 1;
   height: 3px;
   overflow: hidden;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface-2);
 }
 
@@ -450,13 +460,12 @@ a { color: inherit; }
   a.store-card:hover { border-color: var(--accent-line); box-shadow: var(--shadow); }
 }
 
-.store-card-main {
+.store-card-main,
+.store-card--skeleton {
   display: flex;
   gap: 14px;
   padding: 14px;
 }
-
-.store-card--skeleton { display: flex; gap: 14px; padding: 14px; }
 
 .store-thumb {
   display: grid;
@@ -473,13 +482,18 @@ a { color: inherit; }
 .store-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
 .store-card-body { flex: 1; min-width: 0; }
-.store-card-body .skeleton { display: block; }
 
-.store-card-name {
+/* 長い文字は2行で切る */
+.store-card-name,
+.store-card-catch,
+.coupon-strip-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.store-card-name {
   font-size: 1.02rem;
   font-weight: 700;
   line-height: 1.45;
@@ -502,10 +516,6 @@ a { color: inherit; }
 .store-card-tags { margin-top: 8px; }
 
 .store-card-catch {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   padding: 0 14px 14px;
   font-size: 0.85rem;
   line-height: 1.55;
@@ -527,10 +537,6 @@ a { color: inherit; }
 
 .coupon-strip-text {
   flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.5;
@@ -539,7 +545,7 @@ a { color: inherit; }
 .coupon-strip-more {
   flex-shrink: 0;
   padding: 0 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--accent-ink);
   font-size: 0.72rem;
@@ -645,7 +651,6 @@ a { color: inherit; }
 .detail-section { margin-top: 28px; }
 
 .detail-skeleton { padding-top: 8px; }
-.detail-skeleton .skeleton { display: block; }
 
 /* ----- クーポンチケット ----- */
 .ticket-list { display: flex; flex-direction: column; gap: 12px; }
@@ -677,7 +682,6 @@ a { color: inherit; }
 
 .ticket--skeleton { border-color: var(--border); background: var(--surface); }
 .ticket--skeleton::before, .ticket--skeleton::after { border-color: var(--border); }
-.ticket--skeleton .skeleton { display: block; }
 
 .ticket-name {
   white-space: pre-line;
@@ -771,8 +775,8 @@ a { color: inherit; }
   z-index: 60;
   padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
   background: color-mix(in srgb, var(--bg) 88%, transparent);
-  -webkit-backdrop-filter: saturate(1.6) blur(14px);
-  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
 }
 
@@ -914,7 +918,7 @@ a { color: inherit; }
 
 .toast {
   padding: 12px 20px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--ink);
   color: var(--bg);
   font-size: 0.88rem;
@@ -931,6 +935,11 @@ a { color: inherit; }
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
+
+/* 仮表示のカード・チケット・詳細の中では縦に積む */
+.store-card-body .skeleton,
+.detail-skeleton .skeleton,
+.ticket--skeleton .skeleton { display: block; }
 
 @keyframes spin    { to { transform: rotate(360deg); } }
 @keyframes shimmer { to { background-position: -200% 0; } }
