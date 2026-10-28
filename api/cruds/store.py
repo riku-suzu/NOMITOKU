@@ -17,9 +17,9 @@ def get_multiple_stores(db: Session) -> list[dict]:
     return fetch_all(db, sql)
 
 
-def update_favorite_stores(db: Session, user_id: int, store_ids: list) -> None:
+def update_favorite_stores(db: Session, user_id: int, store_ids: list[int]) -> None:
     # JSON_ARRAY(:id0, :id1, ...) の形にして、IDはすべてバインド変数で渡す
-    ids = {f"id{i}": int(store_id) for i, store_id in enumerate(store_ids)}
+    ids = {f"id{i}": store_id for i, store_id in enumerate(store_ids)}
     placeholders = ", ".join(f":{name}" for name in ids)
     sql = text(
         f"""

@@ -69,10 +69,10 @@ def get_store(
     return store
 
 
-@router.put('/update_favorite')
+@router.put("/update_favorite")
 def update_favorite_stores(
-    store_body=Body(),
+    store_ids: list[int] = Body(),
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    store_crud.update_favorite_stores(db, current_user["id"], store_body)
+    store_crud.update_favorite_stores(db, current_user["id"], store_ids)
