@@ -30,7 +30,7 @@
 ## 構成
 
 - `frontend-react/` — 画面（`src/pages/` に各ページ）
-- `api/` — API（`routers/` に URL ごとの処理、`cruds/` にデータベース操作、`extra_modules/auth/` にログイン）
+- `api/` — API（`routers/` に URL ごとの処理、`cruds/` にデータベース操作、`extra_modules/auth/` にログイン、`hotpepper.py`・`google_places.py` に外部 API とのやり取り）
 - `init.sql` — テーブル定義
 
 API には次の環境変数を設定します。
