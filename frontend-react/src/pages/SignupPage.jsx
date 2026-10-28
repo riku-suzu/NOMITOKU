@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
 import { useDir } from '../context/DirectionCtx'
-import { API_HOST, fetchToken } from '../utils/api'
+import { createUser, login, toErrorMessage } from '../utils/api'
 
 function SignupPage() {
   const [nickname, setNickname] = useState('')
@@ -19,21 +19,15 @@ function SignupPage() {
     if (!nickname || !email || !password) { setErrorMsg('すべての項目を入力してください'); return }
     setSubmitting(true)
     setErrorMsg('')
-    fetch(`${API_HOST}/user`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nickname, email, password }),
-    })
+    createUser({ nickname, email, password })
       .then(res => {
-        if (res.ok) return res.json()
+        if (res.ok) return login(email, password)
         if (res.status === 400) throw new Error('このメールアドレスはすでに登録されています')
         throw new Error('登録に失敗しました')
       })
-      .then(() => fetchToken(email, password))
-      .then(res => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
-      .then(data => { localStorage.setItem('token', data.access_token); navigate('/') })
+      .then(ok => { if (!ok) throw new Error('自動ログインに失敗しました'); navigate('/') })
       .catch(error => {
-        setErrorMsg(error instanceof TypeError ? '通信に失敗しました。時間をおいてお試しください' : error.message)
+        setErrorMsg(toErrorMessage(error))
         setSubmitting(false)
       })
   }

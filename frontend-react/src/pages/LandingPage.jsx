@@ -5,7 +5,7 @@ import PageShell from '../components/PageShell'
 import Hero from '../components/Hero'
 import StoreList from '../components/StoreList'
 import Toast from '../components/Toast'
-import { fetchFavoriteIds, fetchNearbyStores, getCurrentPosition } from '../utils/api'
+import { clearToken, fetchFavoriteIds, fetchNearbyStores, getCurrentPosition, hasToken } from '../utils/api'
 import { fade } from '../utils/motion'
 
 // 詳細から戻ったときに一覧をそのまま出すためのキャッシュ
@@ -32,7 +32,7 @@ function LandingPage() {
   const [stores, setStores] = useState(cache.stores || [])
   const [error, setError] = useState(null)
   const [favoriteIds, setFavoriteIds] = useState([])
-  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('token'))
+  const [isLoggedIn, setIsLoggedIn] = useState(hasToken)
   const [toast, setToast] = useState(null)
   const navigate = useNavigate()
 
@@ -71,7 +71,7 @@ function LandingPage() {
 
   const handleAuth = () => {
     if (!isLoggedIn) { navigate('/login'); return }
-    localStorage.removeItem('token')
+    clearToken()
     setIsLoggedIn(false)
     setFavoriteIds([])
     setToast('ログアウトしました')

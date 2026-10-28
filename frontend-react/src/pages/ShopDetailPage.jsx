@@ -7,7 +7,7 @@ import StoreTags from '../components/StoreTags'
 import CouponList from '../components/CouponList'
 import EmptyState from '../components/EmptyState'
 import { Skeleton } from '../components/Skeleton'
-import { fetchFavoriteIds, fetchStore, updateFavoriteIds } from '../utils/api'
+import { fetchFavoriteIds, fetchStore, hasToken, updateFavoriteIds } from '../utils/api'
 import { stagger, rise, tap } from '../utils/motion'
 
 function ShopDetailPage() {
@@ -19,7 +19,7 @@ function ShopDetailPage() {
   const [notFound, setNotFound] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
   const [favBusy, setFavBusy] = useState(false)
-  const isLoggedIn = !!localStorage.getItem('token')
+  const isLoggedIn = hasToken()
 
   useEffect(() => {
     if (!store) fetchStore(id).then(setStore).catch(() => setNotFound(true))

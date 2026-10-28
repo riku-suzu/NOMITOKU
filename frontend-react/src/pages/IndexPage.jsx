@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
-import { API_HOST, authHeader, fetchToken } from '../utils/api'
+import { clearToken, fetchMe, hasToken, login, toErrorMessage } from '../utils/api'
 
 function IndexPage() {
   const [email, setEmail] = useState('')
@@ -16,19 +16,19 @@ function IndexPage() {
     if (!email || !password) { setErrorMsg('メールアドレスとパスワードを入力してください'); return }
     setSubmitting(true)
     setErrorMsg('')
-    fetchToken(email, password)
-      .then(res => { if (res.ok) return res.json(); throw new Error('メールアドレスまたはパスワードが違います') })
-      .then(data => { localStorage.setItem('token', data.access_token); navigate('/') })
+    login(email, password)
+      .then(ok => { if (!ok) throw new Error('メールアドレスまたはパスワードが違います'); navigate('/') })
       .catch(error => {
-        setErrorMsg(error instanceof TypeError ? '通信に失敗しました。時間をおいてお試しください' : error.message)
+        setErrorMsg(toErrorMessage(error))
         setSubmitting(false)
       })
   }
 
   useEffect(() => {
-    if (!localStorage.getItem('token')) return
-    fetch(`${API_HOST}/me`, { headers: authHeader() })
-      .then(r => { if (r.ok) navigate('/'); else localStorage.removeItem('token') })
+    // ログイン済みならトップへ。トークンが切れていたら消しておく
+    if (!hasToken()) return
+    fetchMe()
+      .then(r => { if (r.ok) navigate('/'); else clearToken() })
       .catch(() => {})
   }, [])
 
