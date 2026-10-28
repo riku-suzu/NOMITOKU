@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import PageShell from '../components/PageShell'
+import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
 import { useDir } from '../context/DirectionCtx'
-import { pageVariants, pageTransition } from '../utils/motion'
-
-const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
+import { API_HOST, fetchToken } from '../utils/api'
 
 function SignupPage() {
   const [nickname, setNickname] = useState('')
@@ -13,10 +12,11 @@ function SignupPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
-  const { dir, setDir } = useDir()
+  const { setDir } = useDir()
 
-  const handleRegister = () => {
-    if (!nickname || !email || !password) { setErrorMsg('全ての項目を入力してください'); return }
+  const handleRegister = (e) => {
+    e.preventDefault()
+    if (!nickname || !email || !password) { setErrorMsg('すべての項目を入力してください'); return }
     setSubmitting(true)
     setErrorMsg('')
     fetch(`${API_HOST}/user`, {
@@ -26,58 +26,41 @@ function SignupPage() {
     })
       .then(res => {
         if (res.ok) return res.json()
-        if (res.status === 400) throw new Error('このメールアドレスは既に登録されています')
+        if (res.status === 400) throw new Error('このメールアドレスはすでに登録されています')
         throw new Error('登録に失敗しました')
       })
-      .then(() => fetch(`${API_HOST}/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-      }))
+      .then(() => fetchToken(email, password))
       .then(res => { if (res.ok) return res.json(); throw new Error('自動ログインに失敗しました') })
       .then(data => { localStorage.setItem('token', data.access_token); navigate('/') })
-      .catch(error => { setErrorMsg(error.message); setSubmitting(false) })
+      .catch(error => {
+        setErrorMsg(error instanceof TypeError ? '通信に失敗しました。時間をおいてお試しください' : error.message)
+        setSubmitting(false)
+      })
   }
 
   return (
-    <motion.div
-      className="photo-page"
-      custom={dir}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={pageTransition}
-    >
-      {submitting ? (
-        <div className="landing-loading">
-          <div className="loading-spinner--light" />
-          <p className="loading-text--light">登録中…</p>
-        </div>
-      ) : (
-        <div className="auth-card">
-          <h2 className="auth-card-title">新規会員登録</h2>
-          {errorMsg && <p className="error-msg">{errorMsg}</p>}
-          <div className="form-group">
-            <label>ニックネーム</label>
-            <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="ニックネーム" />
-          </div>
-          <div className="form-group">
-            <label>メールアドレス</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" />
-          </div>
-          <div className="form-group">
-            <label>パスワード</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="パスワード" />
-          </div>
-          <button onClick={handleRegister} className="btn-primary">登録してはじめる</button>
-          <p className="signup-link">
-            すでにアカウントをお持ちの方は{' '}
-            <button onClick={() => { setDir(-1); navigate('/login') }} className="btn-text">ログイン</button>
-          </p>
-        </div>
-      )}
-    </motion.div>
+    <PageShell>
+      <AuthLayout
+        title="新規登録"
+        lead="無料で登録できます。お気に入りのお店を保存できるようになります。"
+        onBack={() => navigate(-1)}
+      >
+        <form className="form" onSubmit={handleRegister} noValidate>
+          <FormError message={errorMsg} />
+          <Field label="ニックネーム" value={nickname} onChange={e => setNickname(e.target.value)}
+            placeholder="のみたろう" autoComplete="nickname" />
+          <Field label="メールアドレス" type="email" value={email} onChange={e => setEmail(e.target.value)}
+            placeholder="example@email.com" autoComplete="email" inputMode="email" />
+          <Field label="パスワード" type="password" value={password} onChange={e => setPassword(e.target.value)}
+            autoComplete="new-password" />
+          <SubmitButton busy={submitting} busyText="登録中…">登録してはじめる</SubmitButton>
+        </form>
+        <p className="auth-switch">
+          アカウントをお持ちの方は
+          <button className="link-btn" onClick={() => { setDir(-1); navigate('/login') }}>ログイン</button>
+        </p>
+      </AuthLayout>
+    </PageShell>
   )
 }
 

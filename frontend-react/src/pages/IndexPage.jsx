@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { useDir } from '../context/DirectionCtx'
-import { pageVariants, pageTransition } from '../utils/motion'
-
-const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8000'
+import PageShell from '../components/PageShell'
+import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
+import { API_HOST, authHeader, fetchToken } from '../utils/api'
 
 function IndexPage() {
   const [email, setEmail] = useState('')
@@ -12,66 +10,49 @@ function IndexPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
-  const { dir } = useDir()
 
-  const handleLogin = () => {
-    if (!email || !password) { setErrorMsg('全ての項目を入力してください'); return }
+  const handleLogin = (e) => {
+    e.preventDefault()
+    if (!email || !password) { setErrorMsg('メールアドレスとパスワードを入力してください'); return }
     setSubmitting(true)
     setErrorMsg('')
-    fetch(`${API_HOST}/token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-    })
-      .then(res => { if (res.ok) return res.json(); throw new Error('メールアドレスまたはパスワードが間違っています') })
+    fetchToken(email, password)
+      .then(res => { if (res.ok) return res.json(); throw new Error('メールアドレスまたはパスワードが違います') })
       .then(data => { localStorage.setItem('token', data.access_token); navigate('/') })
-      .catch(error => { setErrorMsg(error.message); setSubmitting(false) })
+      .catch(error => {
+        setErrorMsg(error instanceof TypeError ? '通信に失敗しました。時間をおいてお試しください' : error.message)
+        setSubmitting(false)
+      })
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) return
-    fetch(`${API_HOST}/me`, { headers: { Authorization: `Bearer ${token}` } })
+    if (!localStorage.getItem('token')) return
+    fetch(`${API_HOST}/me`, { headers: authHeader() })
       .then(r => { if (r.ok) navigate('/'); else localStorage.removeItem('token') })
       .catch(() => {})
   }, [])
 
   return (
-    <motion.div
-      className="photo-page"
-      custom={dir}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={pageTransition}
-    >
-      {submitting ? (
-        <div className="landing-loading">
-          <div className="loading-spinner--light" />
-          <p className="loading-text--light">ログイン中…</p>
-        </div>
-      ) : (
-        <div className="auth-card">
-          <h2 className="auth-card-title">ログイン</h2>
-          {errorMsg && <p className="error-msg">{errorMsg}</p>}
-          <div className="form-group">
-            <label>メールアドレス</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" />
-          </div>
-          <div className="form-group">
-            <label>パスワード</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="パスワード" />
-          </div>
-          <button onClick={handleLogin} className="btn-primary">ログイン</button>
-          <p className="signup-link">
-            アカウントをお持ちでない方は{' '}
-            <button onClick={() => navigate('/signup')} className="btn-text">新規会員登録</button>
-          </p>
-          <button onClick={() => navigate(-1)} className="btn-back-login">← 戻る</button>
-        </div>
-      )}
-    </motion.div>
+    <PageShell>
+      <AuthLayout
+        title="ログイン"
+        lead="お気に入りのお店を保存して、いつでも見返せます。"
+        onBack={() => navigate(-1)}
+      >
+        <form className="form" onSubmit={handleLogin} noValidate>
+          <FormError message={errorMsg} />
+          <Field label="メールアドレス" type="email" value={email} onChange={e => setEmail(e.target.value)}
+            placeholder="example@email.com" autoComplete="email" inputMode="email" />
+          <Field label="パスワード" type="password" value={password} onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password" />
+          <SubmitButton busy={submitting} busyText="ログイン中…">ログイン</SubmitButton>
+        </form>
+        <p className="auth-switch">
+          はじめての方は
+          <button className="link-btn" onClick={() => navigate('/signup')}>新規登録</button>
+        </p>
+      </AuthLayout>
+    </PageShell>
   )
 }
 

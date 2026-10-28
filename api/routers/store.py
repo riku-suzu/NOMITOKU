@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 import api.cruds.store as store_crud
+import api.hotpepper as hotpepper
 from api.db import get_db
 from api.extra_modules.auth.core import get_current_user
 
@@ -36,11 +37,41 @@ def _fmt_dist(m):
     return f"{int(m)}m" if m < 1000 else f"{m/1000:.1f}km"
 
 
+def _nearby_from_hotpepper(lat: float, lng: float):
+    stores = []
+    for shop in hotpepper.search_nearby(lat, lng):
+        store = hotpepper.to_store(shop)
+        store["distance_m"] = _haversine_m(lat, lng, store["lat"], store["lng"])
+        store["distance"] = _fmt_dist(store["distance_m"])
+        stores.append(store)
+    stores.sort(key=lambda x: x["distance_m"])
+    for s in stores:
+        del s["distance_m"]
+    return stores[:20]
+
+
+@router.get("/stores/{store_id}/coupons")
+def get_store_coupons(store_id: int):
+    if not hotpepper.scraping_enabled():
+        raise HTTPException(status_code=404, detail="Coupon scraping is disabled")
+    try:
+        return hotpepper.fetch_coupons(hotpepper.to_shop_id(store_id))
+    except Exception as e:
+        print(f"[Hot Pepper] coupon fetch failed: {e}")
+        raise HTTPException(status_code=502, detail="Failed to fetch coupons")
+
+
 @router.get("/stores/nearby")
 def get_nearby_stores(
     lat: float,
     lng: float,
 ):
+    if hotpepper.api_key():
+        try:
+            return _nearby_from_hotpepper(lat, lng)
+        except Exception as e:
+            print(f"[Hot Pepper] search failed, falling back to Google Places: {e}")
+
     api_key = os.environ.get("GOOGLE_PLACES_API_KEY", "")
     if not api_key:
         print("[Places API] GOOGLE_PLACES_API_KEY is not set")
@@ -120,6 +151,15 @@ def get_store(
     store_id: int,
     db: Session = Depends(get_db),
 ):
+    # 詳細ページを直接開いた（再読み込みした）ときはホットペッパーから取り直す
+    if hotpepper.api_key():
+        try:
+            shop = hotpepper.get_shop(hotpepper.to_shop_id(store_id))
+            if shop:
+                return hotpepper.to_store(shop)
+        except Exception as e:
+            print(f"[Hot Pepper] shop fetch failed: {e}")
+
     store = store_crud.get_store(db, store_id=store_id)
     if store is None:
         raise HTTPException(status_code=404, detail="Store not found")
