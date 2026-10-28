@@ -4,7 +4,7 @@ import PageShell from '../components/PageShell'
 import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
 import { clearToken, fetchMe, hasToken, login, toErrorMessage } from '../utils/api'
 
-function IndexPage() {
+function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
@@ -56,4 +56,4 @@ function IndexPage() {
   )
 }
 
-export default IndexPage
+export default LoginPage

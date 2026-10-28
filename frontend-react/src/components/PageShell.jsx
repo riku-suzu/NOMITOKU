@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { useDir } from '../context/DirectionCtx'
+import { useDirection } from '../context/DirectionContext'
 import { pageVariants } from '../utils/motion'
 
 // 各ページ共通のラッパー（ページ遷移アニメーション）
 function PageShell({ children, className = '', keepScroll = false }) {
-  const { dir } = useDir()
+  const { dir } = useDirection()
 
   useEffect(() => {
     if (!keepScroll) window.scrollTo(0, 0)

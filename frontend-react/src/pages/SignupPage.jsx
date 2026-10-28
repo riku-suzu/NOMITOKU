@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import { AuthLayout, Field, FormError, SubmitButton } from '../components/AuthForm'
-import { useDir } from '../context/DirectionCtx'
+import { useDirection } from '../context/DirectionContext'
 import { createUser, login, toErrorMessage } from '../utils/api'
 
 function SignupPage() {
@@ -12,7 +12,7 @@ function SignupPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
-  const { setDir } = useDir()
+  const { setDir } = useDirection()
 
   const handleRegister = (e) => {
     e.preventDefault()
