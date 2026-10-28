@@ -1,6 +1,5 @@
 import os
 import secrets
-import typing as T
 from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException, status
@@ -22,9 +21,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 def create_access_token(
     data: dict,
-    expires_delta: T.Union[timedelta, None] = None,
+    expires_delta: timedelta | None = None,
 ) -> str:
-
     to_encode = data.copy()
 
     expire = (
@@ -41,7 +39,7 @@ def create_access_token(
 def get_current_user(
     db: Session = Depends(get_db),
     token: str | None = Depends(oauth2_scheme),
-):
+) -> dict:
     """
     tokenを検証し、userを返します。
 

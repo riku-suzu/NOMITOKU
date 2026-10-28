@@ -46,7 +46,7 @@ def get_nearby_stores(
 def list_stores(
     db: Session = Depends(get_db),
 ):
-    return store_crud.get_multiple_stores(db, user_id=None)
+    return store_crud.get_multiple_stores(db)
 
 
 @router.get("/store/{store_id}")
@@ -75,4 +75,4 @@ def update_favorite_stores(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    store_crud.update_favorite_stores(store_body, db, current_user.get("id"))
+    store_crud.update_favorite_stores(db, current_user["id"], store_body)
