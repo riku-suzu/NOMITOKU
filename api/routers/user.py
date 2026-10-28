@@ -33,9 +33,6 @@ def get_me(current_user=Depends(get_current_user)):
     return current_user
 
 
-@router.get("/user/test")
-def test(db: Session = Depends(get_db)):
-    return user_crud.get_user_by_email(db, email="u1@aoyama.jp")
 
 @router.get("/me/favoritestores")
 def get_favorite_stores(
