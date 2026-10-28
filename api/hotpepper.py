@@ -15,6 +15,8 @@ import unicodedata
 
 import requests as req
 
+from api import geo
+
 API_URL = "https://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
 SHOP_URL = "https://www.hotpepper.jp/str{shop_id}/map/"
 IZAKAYA = "G001"
@@ -48,6 +50,8 @@ def to_shop_id(store_id: int) -> str:
 # 検索範囲（API の range: 3=1km / 4=2km / 5=3km）。近くに少ないときは広げる
 SEARCH_RANGES = (3, 4, 5)
 MIN_RESULTS = 10
+# 一覧に出すお店の数
+MAX_STORES = 20
 
 
 def _search(lat: float, lng: float, search_range: int) -> list[dict]:
@@ -117,10 +121,21 @@ def to_store(shop: dict) -> dict:
         "private_room": _has(shop.get("private_room")),
         "lat": float(shop["lat"]),
         "lng": float(shop["lng"]),
-        "map_url": f"https://maps.google.com/maps?q={shop['lat']},{shop['lng']}&z=17&output=embed",
+        "map_url": geo.map_embed_url(shop["lat"], shop["lng"]),
         "hotpepper_url": shop.get("urls", {}).get("pc", ""),
         "coupon_url": shop.get("coupon_urls", {}).get("sp", ""),
     }
+
+
+def nearby_stores(lat: float, lng: float) -> list[dict]:
+    """現在地の近くのお店を、近い順にフロント向けの形で返す"""
+    stores = []
+    for shop in search_nearby(lat, lng):
+        store = to_store(shop)
+        meters = geo.distance_m(lat, lng, store["lat"], store["lng"])
+        store["distance"] = geo.format_distance(meters)
+        stores.append((meters, store))
+    return geo.nearest_first(stores)[:MAX_STORES]
 
 
 def _text(fragment: str) -> str:
