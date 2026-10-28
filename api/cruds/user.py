@@ -28,8 +28,8 @@ def create_user(db: Session, user: dict) -> dict | None:
         "password": get_password_hash(user.get("password")),
     }
 
+    # ユーザーとお気に入りの行は、どちらかだけが残らないよう1回でコミットする
     db.execute(sql, params)
-    db.commit()
     new_user = get_user_by_email(db, user.get("email"))
 
     # お気に入りを保存できるよう、users_favorite_stores に空のリストを用意しておく
@@ -41,7 +41,7 @@ def create_user(db: Session, user: dict) -> dict | None:
             """
         )
         db.execute(sql_fav, {"user_id": new_user["id"], "favorite": "[]"})
-        db.commit()
+    db.commit()
 
     return new_user
 
