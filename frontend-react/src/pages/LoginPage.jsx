@@ -30,6 +30,8 @@ function LoginPage() {
     fetchMe()
       .then(r => { if (r.ok) navigate('/'); else clearToken() })
       .catch(() => {})
+  // 画面を開いたときに1回だけ確認する
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

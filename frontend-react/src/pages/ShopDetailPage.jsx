@@ -25,7 +25,9 @@ function ShopDetailPage() {
 
   useEffect(() => {
     if (!store) fetchStore(id).then(setStore).catch(() => setNotFound(true))
-    if (isLoggedIn) fetchFavoriteIds().then(ids => setIsFavorite(ids.includes(id))).catch(() => {})
+    if (hasToken()) fetchFavoriteIds().then(ids => setIsFavorite(ids.includes(id))).catch(() => {})
+  // お店が変わったときだけ取り直す（一覧から渡されたお店があればそれを使う）
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const toggleFavorite = () => {

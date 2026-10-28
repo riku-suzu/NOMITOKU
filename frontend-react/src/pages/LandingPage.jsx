@@ -41,9 +41,9 @@ function LandingPage() {
     fetchFavoriteIds().then(setFavoriteIds).catch(() => {})
   }, [isLoggedIn])
 
-  // 一覧に戻ってきたら前のスクロール位置へ
+  // 一覧に戻ってきたら前のスクロール位置へ（一覧のキャッシュがあるときは最初から一覧を出している）
   useEffect(() => {
-    if (view === 'list' && cache.scrollY) {
+    if (cache.stores && cache.scrollY) {
       requestAnimationFrame(() => window.scrollTo(0, cache.scrollY))
     }
   }, [])
